@@ -1,0 +1,65 @@
+import { Outlet, NavLink, useLocation } from 'react-router-dom';
+import {
+  LayoutDashboard, Library, PlusCircle, FolderOpen, History, Settings, LogOut, ChevronLeft, ChevronRight,
+} from 'lucide-react';
+import { useState } from 'react';
+
+const navItems = [
+  { to: '/parent/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+  { to: '/parent/library', icon: Library, label: 'Library' },
+  { to: '/parent/add', icon: PlusCircle, label: 'Add Content' },
+  { to: '/parent/categories', icon: FolderOpen, label: 'Categories' },
+  { to: '/parent/history', icon: History, label: 'Watch History' },
+  { to: '/parent/settings', icon: Settings, label: 'Settings' },
+];
+
+export function ParentLayout() {
+  const [collapsed, setCollapsed] = useState(false);
+  const location = useLocation();
+
+  return (
+    <div className="flex min-h-screen bg-background">
+      {/* Sidebar */}
+      <aside className={`${collapsed ? 'w-16' : 'w-64'} border-r border-border bg-card flex-shrink-0 flex flex-col transition-all duration-300`}>
+        <div className="p-4 flex items-center justify-between border-b border-border">
+          {!collapsed && <h2 className="text-lg font-bold text-primary">YookiePlay</h2>}
+          <button onClick={() => setCollapsed(!collapsed)} className="p-1.5 rounded-lg hover:bg-muted text-muted-foreground transition-colors">
+            {collapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
+          </button>
+        </div>
+        <nav className="flex-1 p-2 space-y-1">
+          {navItems.map(item => (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              className={({ isActive }) =>
+                `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                  isActive
+                    ? 'bg-primary text-primary-foreground'
+                    : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                }`
+              }
+            >
+              <item.icon className="w-5 h-5 flex-shrink-0" />
+              {!collapsed && <span>{item.label}</span>}
+            </NavLink>
+          ))}
+        </nav>
+        <div className="p-2 border-t border-border">
+          <NavLink
+            to="/"
+            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+          >
+            <LogOut className="w-5 h-5 flex-shrink-0" />
+            {!collapsed && <span>Exit to Child Mode</span>}
+          </NavLink>
+        </div>
+      </aside>
+
+      {/* Main */}
+      <main className="flex-1 overflow-auto">
+        <Outlet />
+      </main>
+    </div>
+  );
+}
