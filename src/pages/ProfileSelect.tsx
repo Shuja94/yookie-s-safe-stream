@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { Settings } from 'lucide-react';
 import { store } from '@/lib/store';
+import yookieAvatar from '@/assets/yookie-avatar.png';
 
 export default function ProfileSelect() {
   const navigate = useNavigate();
