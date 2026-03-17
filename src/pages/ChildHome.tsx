@@ -28,8 +28,8 @@ export default function ChildHome() {
           </h1>
           <p className="text-sm text-muted-foreground">What would you like to watch today?</p>
         </div>
-        <div className="w-10 h-10 rounded-xl gradient-sky flex items-center justify-center text-lg">
-          🧒
+        <div className="w-10 h-10 rounded-xl gradient-sky overflow-hidden flex items-center justify-center">
+          <img src={yookieAvatar} alt="Yookie" className="w-full h-full object-cover" />
         </div>
       </motion.header>
 
