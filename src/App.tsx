@@ -1,22 +1,60 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
-import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import Index from "./pages/Index.tsx";
-import NotFound from "./pages/NotFound.tsx";
+
+import SplashScreen from "./pages/SplashScreen";
+import ProfileSelect from "./pages/ProfileSelect";
+import ChildHome from "./pages/ChildHome";
+import VideoDetail from "./pages/VideoDetail";
+import VideoPlayer from "./pages/VideoPlayer";
+import Favorites from "./pages/Favorites";
+import CategoryBrowse from "./pages/CategoryBrowse";
+import ParentLogin from "./pages/parent/ParentLogin";
+import ParentDashboard from "./pages/parent/ParentDashboard";
+import AddContent from "./pages/parent/AddContent";
+import ManageLibrary from "./pages/parent/ManageLibrary";
+import ManageCategories from "./pages/parent/ManageCategories";
+import WatchHistoryPage from "./pages/parent/WatchHistoryPage";
+import ParentSettings from "./pages/parent/ParentSettings";
+import { ChildLayout } from "./components/child/ChildLayout";
+import { ParentLayout } from "./components/parent/ParentLayout";
+import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <Toaster />
       <Sonner />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Index />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          {/* Entry */}
+          <Route path="/" element={<SplashScreen />} />
+          <Route path="/profile" element={<ProfileSelect />} />
+
+          {/* Child routes with bottom nav */}
+          <Route element={<ChildLayout />}>
+            <Route path="/home" element={<ChildHome />} />
+            <Route path="/favorites" element={<Favorites />} />
+            <Route path="/categories" element={<CategoryBrowse />} />
+          </Route>
+
+          {/* Child routes without bottom nav */}
+          <Route path="/video/:id" element={<VideoDetail />} />
+          <Route path="/player/:id" element={<VideoPlayer />} />
+
+          {/* Parent routes */}
+          <Route path="/parent/login" element={<ParentLogin />} />
+          <Route element={<ParentLayout />}>
+            <Route path="/parent/dashboard" element={<ParentDashboard />} />
+            <Route path="/parent/add" element={<AddContent />} />
+            <Route path="/parent/library" element={<ManageLibrary />} />
+            <Route path="/parent/categories" element={<ManageCategories />} />
+            <Route path="/parent/history" element={<WatchHistoryPage />} />
+            <Route path="/parent/settings" element={<ParentSettings />} />
+          </Route>
+
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
