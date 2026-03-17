@@ -1,4 +1,5 @@
 import { store } from '@/lib/store';
+import yookieAvatar from '@/assets/yookie-avatar.png';
 import { VideoCard } from '@/components/shared/VideoCard';
 import { VideoRow } from '@/components/shared/VideoRow';
 import { HeroBanner } from '@/components/shared/HeroBanner';
