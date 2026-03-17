@@ -10,7 +10,8 @@ export default function Favorites() {
   const favorites = store.getFavoriteVideos(store.profile.age);
 
   useEffect(() => {
-    return store.subscribe(() => setTick(t => t + 1));
+    const unsub = store.subscribe(() => setTick(t => t + 1));
+    return () => { unsub(); };
   }, []);
 
   return (
