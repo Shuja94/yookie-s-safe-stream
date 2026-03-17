@@ -37,8 +37,8 @@ export default function ProfileSelect() {
         onClick={() => navigate('/home')}
         className="card-ceramic-elevated p-6 md:p-8 flex flex-col items-center gap-4 cursor-pointer"
       >
-        <div className="w-28 h-28 md:w-36 md:h-36 rounded-[2rem] gradient-sky flex items-center justify-center">
-          <span className="text-5xl md:text-6xl">🧒</span>
+        <div className="w-28 h-28 md:w-36 md:h-36 rounded-[2rem] gradient-sky flex items-center justify-center overflow-hidden">
+          <img src={yookieAvatar} alt="Yookie" className="w-full h-full object-cover" />
         </div>
         <div>
           <h2 className="text-xl font-bold text-foreground">{profile.name}</h2>
