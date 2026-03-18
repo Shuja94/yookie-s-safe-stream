@@ -1,8 +1,9 @@
-import { Outlet, NavLink, useLocation } from 'react-router-dom';
+import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, Library, PlusCircle, FolderOpen, History, Settings, LogOut, ChevronLeft, ChevronRight,
 } from 'lucide-react';
 import { useState } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
 
 const navItems = [
   { to: '/parent/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
@@ -15,7 +16,13 @@ const navItems = [
 
 export function ParentLayout() {
   const [collapsed, setCollapsed] = useState(false);
-  const location = useLocation();
+  const { signOut } = useAuth();
+  const navigate = useNavigate();
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/');
+  };
 
   return (
     <div className="flex min-h-screen bg-background">
@@ -46,13 +53,13 @@ export function ParentLayout() {
           ))}
         </nav>
         <div className="p-2 border-t border-border">
-          <NavLink
-            to="/"
-            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+          <button
+            onClick={handleSignOut}
+            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors w-full"
           >
             <LogOut className="w-5 h-5 flex-shrink-0" />
-            {!collapsed && <span>Exit to Child Mode</span>}
-          </NavLink>
+            {!collapsed && <span>Sign Out</span>}
+          </button>
         </div>
       </aside>
 
