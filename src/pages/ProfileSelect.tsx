@@ -1,10 +1,10 @@
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { Settings, Play } from 'lucide-react';
 import { store } from '@/lib/store';
+import { getAvatarEmoji } from '@/components/child/AvatarPickerModal';
+import { Settings, Play } from 'lucide-react';
 import { useState } from 'react';
 import { ParentLockModal } from '@/components/shared/ParentLockModal';
-import { getAvatarEmoji } from '@/components/child/AvatarPickerModal';
 import { useAuth } from '@/contexts/AuthContext';
 
 export default function ProfileSelect() {
@@ -14,26 +14,20 @@ export default function ProfileSelect() {
   const { user } = useAuth();
 
   return (
-    <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4 relative overflow-hidden">
-      {/* Background decoration */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-32 -right-32 w-64 h-64 rounded-full bg-primary/5 blur-3xl" />
-        <div className="absolute -bottom-32 -left-32 w-64 h-64 rounded-full bg-accent/5 blur-3xl" />
-      </div>
-
-      {/* Top bar */}
+    <div className="min-h-screen bg-background flex flex-col items-center justify-center p-6 relative">
+      {/* Top controls */}
       <div className="absolute top-4 right-4 flex items-center gap-2">
         {user && (
           <button
             onClick={() => navigate('/parent/dashboard')}
-            className="px-3 py-1.5 rounded-xl text-xs font-semibold text-primary bg-primary/10 hover:bg-primary/20 transition-colors"
+            className="px-3 py-1.5 rounded-lg text-xs font-semibold text-primary bg-primary/10 hover:bg-primary/20 transition-colors"
           >
             Parent Panel
           </button>
         )}
         <button
           onClick={() => setLockOpen(true)}
-          className="p-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+          className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-surface-2 transition-colors"
         >
           <Settings className="w-5 h-5" />
         </button>
@@ -46,44 +40,44 @@ export default function ProfileSelect() {
       />
 
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="text-center mb-10"
-      >
-        <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2">Who's watching?</h1>
-        <p className="text-muted-foreground text-sm">Tap your profile to start</p>
-      </motion.div>
-
-      <motion.button
-        initial={{ opacity: 0, scale: 0.9 }}
+        initial={{ opacity: 0, scale: 0.96 }}
         animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 0.2, type: 'spring', stiffness: 200, damping: 15 }}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        onClick={() => navigate('/home')}
-        className="card-ceramic-elevated p-6 md:p-8 flex flex-col items-center gap-4 cursor-pointer group"
+        transition={{ duration: 0.5 }}
+        className="text-center"
       >
-        <div className="w-28 h-28 md:w-36 md:h-36 rounded-[2rem] bg-primary/10 flex items-center justify-center group-hover:bg-primary/15 transition-colors">
-          <span className="text-6xl md:text-7xl">{getAvatarEmoji(profile.avatar_url || 'lion')}</span>
-        </div>
-        <div className="text-center">
-          <h2 className="text-xl font-bold text-foreground">{profile.name}</h2>
-          <p className="text-sm text-muted-foreground">Age {profile.age}</p>
-        </div>
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full gradient-hero text-primary-foreground text-sm font-semibold">
-          <Play className="w-4 h-4 fill-current" /> Start Watching
-        </div>
-      </motion.button>
+        <h1 className="text-2xl md:text-3xl font-extrabold text-foreground mb-1.5">Who's watching?</h1>
+        <p className="text-muted-foreground text-sm mb-12">Select a profile to start</p>
 
-      <motion.p
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.6 }}
-        className="mt-12 text-xs text-muted-foreground font-medium"
-      >
-        Halal Play • Safe Islamic videos for kids
-      </motion.p>
+        <div className="flex flex-wrap justify-center gap-10">
+          {/* Child */}
+          <motion.button
+            whileHover={{ scale: 1.08, y: -4 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => navigate('/home')}
+            className="flex flex-col items-center gap-3 group"
+          >
+            <div className="w-24 h-24 md:w-28 md:h-28 rounded-2xl bg-surface-2 flex items-center justify-center text-5xl border-2 border-transparent group-hover:border-primary transition-all duration-300 shadow-card">
+              {getAvatarEmoji(profile.avatar_url || 'lion')}
+            </div>
+            <span className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors">{profile.name}</span>
+          </motion.button>
+
+          {/* Parent */}
+          <motion.button
+            whileHover={{ scale: 1.08, y: -4 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => navigate('/parent/login')}
+            className="flex flex-col items-center gap-3 group"
+          >
+            <div className="w-24 h-24 md:w-28 md:h-28 rounded-2xl bg-surface-2 flex items-center justify-center text-5xl border-2 border-transparent group-hover:border-primary transition-all duration-300 shadow-card">
+              👨‍👩‍👧
+            </div>
+            <span className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors">Parent</span>
+          </motion.button>
+        </div>
+
+        <p className="mt-14 text-[11px] text-muted-foreground font-medium">Halal Play • Safe Islamic videos for kids</p>
+      </motion.div>
     </div>
   );
 }
