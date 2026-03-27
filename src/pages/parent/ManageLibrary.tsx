@@ -116,8 +116,15 @@ export default function ManageLibrary() {
                         <span className="inline-flex items-center gap-1 text-xs text-accent"><Clock className="w-3 h-3" /> Pending</span>
                       )}
                     </td>
-                    <td className="p-4">
+                     <td className="p-4">
                       <div className="flex items-center justify-end gap-1">
+                        <button
+                          onClick={() => setEditingVideo(video)}
+                          className="p-2 rounded-lg hover:bg-muted text-muted-foreground transition-colors"
+                          title="Edit"
+                        >
+                          <Edit className="w-4 h-4" />
+                        </button>
                         <button
                           onClick={() => { store.updateVideo(video.id, { is_approved: !video.is_approved }); toast.success(video.is_approved ? 'Unapproved' : 'Approved'); }}
                           className="p-2 rounded-lg hover:bg-muted text-muted-foreground transition-colors"
