@@ -1,12 +1,14 @@
 import { store } from '@/lib/store';
-import yookieAvatar from '@/assets/yookie-avatar.png';
 import { VideoCard } from '@/components/shared/VideoCard';
 import { VideoRow } from '@/components/shared/VideoRow';
 import { HeroBanner } from '@/components/shared/HeroBanner';
 import { motion } from 'framer-motion';
+import { useState } from 'react';
+import { AvatarPickerModal, getAvatarEmoji } from '@/components/child/AvatarPickerModal';
 
 export default function ChildHome() {
   const profile = store.profile;
+  const [avatarOpen, setAvatarOpen] = useState(false);
   const age = profile.age;
   const approved = store.getApprovedVideos(age);
   const featured = store.getFeaturedVideos(age);
