@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { store } from '@/lib/store';
 import { VideoCard } from '@/components/shared/VideoCard';
 import { motion } from 'framer-motion';
@@ -7,6 +8,7 @@ export default function CategoryBrowse() {
   const navigate = useNavigate();
   const categories = store.categories.filter(c => c.is_active);
   const age = store.profile.age;
+  const [noMusicOnly, setNoMusicOnly] = useState(false);
 
   return (
     <div className="min-h-screen bg-background">
