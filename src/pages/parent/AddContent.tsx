@@ -24,6 +24,7 @@ export default function AddContent() {
     is_featured: false,
     is_approved: false,
     is_hidden: false,
+    is_no_music: false,
     safe_notes: '',
   });
 
