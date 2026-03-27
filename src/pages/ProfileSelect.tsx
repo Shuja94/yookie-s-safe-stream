@@ -210,6 +210,7 @@ export default function ProfileSelect() {
   const [addOpen, setAddOpen] = useState(false);
   const [editProfile, setEditProfile] = useState<Profile | null>(null);
   const [isManaging, setIsManaging] = useState(false);
+  const [lockOpen, setLockOpen] = useState(false);
   const { user } = useAuth();
   const [, setTick] = useState(0);
 
