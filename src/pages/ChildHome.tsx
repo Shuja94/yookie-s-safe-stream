@@ -27,25 +27,25 @@ export default function ChildHome() {
       <motion.header
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="px-4 md:px-8 pt-6 pb-4 flex items-center justify-between"
+        className="px-5 md:px-12 pt-5 pb-3 flex items-center justify-between"
       >
         <div className="flex items-center gap-3">
           <button
             onClick={() => setAvatarOpen(true)}
-            className="w-11 h-11 rounded-2xl bg-primary/10 flex items-center justify-center text-2xl hover:scale-105 active:scale-95 transition-transform"
+            className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-xl hover:scale-110 active:scale-95 transition-transform"
           >
             {getAvatarEmoji(profile.avatar_url || 'lion')}
           </button>
           <div>
-            <h1 className="text-lg md:text-xl font-bold text-foreground">
-              Welcome, {profile.name}! 👋
+            <h1 className="text-base md:text-lg font-bold text-foreground">
+              Hi, {profile.name}! 👋
             </h1>
-            <p className="text-xs text-muted-foreground">What would you like to watch?</p>
+            <p className="text-xs text-muted-foreground">What shall we watch?</p>
           </div>
         </div>
         <button
           onClick={() => setLockOpen(true)}
-          className="p-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+          className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
           aria-label="Parent settings"
         >
           <Settings className="w-5 h-5" />
@@ -70,7 +70,7 @@ export default function ChildHome() {
 
       {/* Continue Watching */}
       {continueWatching.length > 0 && (
-        <VideoRow title="Continue Watching ▶️" delay={0.1}>
+        <VideoRow title="Continue Watching" delay={0.1}>
           {continueWatching.map(wh => (
             <VideoCard
               key={wh.id}
@@ -83,11 +83,20 @@ export default function ChildHome() {
         </VideoRow>
       )}
 
+      {/* Recommended */}
+      {approved.length > 0 && (
+        <VideoRow title={`Recommended for ${profile.name}`} delay={0.12}>
+          {approved.slice(0, 12).map(v => (
+            <VideoCard key={v.id} video={v} category={store.getCategory(v.category_id)} />
+          ))}
+        </VideoRow>
+      )}
+
       {/* No Music */}
       {(() => {
         const noMusic = store.getNoMusicVideos(age);
         return noMusic.length > 0 ? (
-          <VideoRow title="🔇 No Music" delay={0.15}>
+          <VideoRow title="No Music" delay={0.15}>
             {noMusic.slice(0, 12).map(v => (
               <VideoCard key={v.id} video={v} category={store.getCategory(v.category_id)} />
             ))}
@@ -97,7 +106,7 @@ export default function ChildHome() {
 
       {/* Favorites */}
       {favorites.length > 0 && (
-        <VideoRow title={`${profile.name}'s Favorites ❤️`} delay={0.2}>
+        <VideoRow title={`${profile.name}'s Favorites`} delay={0.18}>
           {favorites.map(v => (
             <VideoCard key={v.id} video={v} category={store.getCategory(v.category_id)} />
           ))}
@@ -109,7 +118,7 @@ export default function ChildHome() {
         const vids = store.getVideosByCategory(cat.id, age);
         if (vids.length === 0) return null;
         return (
-          <VideoRow key={cat.id} title={`${cat.icon} ${cat.name}`} delay={0.15 + i * 0.04}>
+          <VideoRow key={cat.id} title={`${cat.icon} ${cat.name}`} delay={0.2 + i * 0.03}>
             {vids.slice(0, 12).map(v => (
               <VideoCard key={v.id} video={v} category={cat} />
             ))}
@@ -119,7 +128,7 @@ export default function ChildHome() {
 
       {/* Recently Added */}
       {approved.length > 0 && (
-        <VideoRow title="Recently Added ✨" delay={0.4}>
+        <VideoRow title="Recently Added" delay={0.35}>
           {[...approved].reverse().slice(0, 10).map(v => (
             <VideoCard key={v.id} video={v} category={store.getCategory(v.category_id)} />
           ))}

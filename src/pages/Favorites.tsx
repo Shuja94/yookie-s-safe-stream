@@ -19,26 +19,26 @@ export default function Favorites() {
       <motion.header
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="px-4 md:px-8 pt-6 pb-4"
+        className="px-5 md:px-12 pt-6 pb-4"
       >
-        <h1 className="text-xl md:text-2xl font-bold text-foreground">{store.profile.name}'s Favorites ❤️</h1>
-        <p className="text-sm text-muted-foreground">Videos {store.profile.name} loves the most</p>
+        <h1 className="text-xl md:text-2xl font-bold text-foreground">{store.profile.name}'s Favorites</h1>
+        <p className="text-sm text-muted-foreground">Videos you love the most</p>
       </motion.header>
 
       {favorites.length === 0 ? (
         <EmptyState
-          icon={<Heart className="w-12 h-12 text-accent" />}
+          icon={<Heart className="w-12 h-12 text-primary" />}
           title="No favorites yet"
           description="Tap the heart on any video to add it here!"
         />
       ) : (
-        <div className="px-4 md:px-8 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div className="px-5 md:px-12 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
           {favorites.map((v, i) => (
             <motion.div
               key={v.id}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.05 }}
+              transition={{ delay: i * 0.04 }}
             >
               <VideoCard video={v} category={store.getCategory(v.category_id)} size="sm" />
             </motion.div>
