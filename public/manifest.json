@@ -1,0 +1,18 @@
+{
+  "name": "Halal Play",
+  "short_name": "Halal Play",
+  "description": "Safe Islamic videos for kids",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f1729",
+  "theme_color": "#22c55e",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
