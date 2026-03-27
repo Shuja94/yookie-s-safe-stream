@@ -71,7 +71,7 @@ export default function ParentLogin() {
             {isSignUp ? 'Create Account' : 'Parent Access'}
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
-            {isSignUp ? 'Sign up to manage YookiePlay' : 'Secure login to manage YookiePlay'}
+            {isSignUp ? 'Sign up to manage Halal Play' : 'Secure login to manage Halal Play'}
           </p>
         </div>
 

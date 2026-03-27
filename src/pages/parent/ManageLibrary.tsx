@@ -165,6 +165,10 @@ export default function ManageLibrary() {
           <div className="py-12 text-center text-muted-foreground text-sm">No videos found</div>
         )}
       </div>
+
+      {editingVideo && (
+        <EditVideoModal video={editingVideo} onClose={() => { setEditingVideo(null); setTick(t => t + 1); }} />
+      )}
     </div>
   );
 }

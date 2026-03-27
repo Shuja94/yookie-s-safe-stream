@@ -2,21 +2,30 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { Settings } from 'lucide-react';
 import { store } from '@/lib/store';
+import { useState } from 'react';
+import { ParentLockModal } from '@/components/shared/ParentLockModal';
 import yookieAvatar from '@/assets/yookie-avatar.png';
 
 export default function ProfileSelect() {
   const navigate = useNavigate();
   const profile = store.profile;
+  const [lockOpen, setLockOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
-      {/* Parent access */}
+      {/* Parent access - locked */}
       <button
-        onClick={() => navigate('/parent/login')}
+        onClick={() => setLockOpen(true)}
         className="absolute top-4 right-4 p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
       >
         <Settings className="w-5 h-5" />
       </button>
+
+      <ParentLockModal
+        open={lockOpen}
+        onClose={() => setLockOpen(false)}
+        onUnlock={() => { setLockOpen(false); navigate('/parent/login'); }}
+      />
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -52,7 +61,7 @@ export default function ProfileSelect() {
         transition={{ delay: 0.6 }}
         className="mt-12 text-xs text-muted-foreground"
       >
-        YookiePlay • A safe little world of videos
+        Halal Play • Safe Islamic videos for kids
       </motion.p>
     </div>
   );
