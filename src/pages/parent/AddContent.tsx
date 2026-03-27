@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { store } from '@/lib/store';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { Video as VideoIcon, Link, ArrowLeft } from 'lucide-react';
+import { Video as VideoIcon, Link } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function AddContent() {
@@ -74,92 +74,75 @@ export default function AddContent() {
       safe_notes: form.safe_notes,
     });
 
-    toast.success('Video added successfully!');
+    toast.success('Video added!');
     navigate('/parent/library');
   };
 
-  const inputClass = "w-full px-4 py-2.5 rounded-xl border border-border bg-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all text-sm";
-  const labelClass = "block text-sm font-medium text-foreground mb-1.5";
-
   return (
-    <div className="p-6 md:p-8 max-w-3xl">
-      <h1 className="text-2xl font-bold text-foreground mb-6">Add Content</h1>
+    <div className="p-6 md:p-8 max-w-2xl">
+      <h1 className="text-xl font-bold text-foreground mb-6">Add Content</h1>
 
-      {/* Tabs */}
       <div className="flex gap-2 mb-6">
         {(['youtube', 'hosted'] as const).map(t => (
           <button
             key={t}
             onClick={() => setTab(t)}
-            className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium transition-all ${
-              tab === t ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground hover:bg-muted/80'
+            className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-medium transition-all ${
+              tab === t ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground hover:bg-muted'
             }`}
           >
-            {t === 'youtube' ? <Link className="w-4 h-4" /> : <VideoIcon className="w-4 h-4" />}
-            {t === 'youtube' ? 'YouTube Link' : 'Hosted Video'}
+            {t === 'youtube' ? <Link className="w-3.5 h-3.5" /> : <VideoIcon className="w-3.5 h-3.5" />}
+            {t === 'youtube' ? 'YouTube' : 'Hosted'}
           </button>
         ))}
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-5">
+      <form onSubmit={handleSubmit} className="space-y-4">
         {tab === 'youtube' ? (
           <div>
-            <label className={labelClass}>YouTube URL</label>
-            <input
-              type="url"
-              value={form.youtube_url}
-              onChange={e => handleYouTubeUrl(e.target.value)}
-              className={inputClass}
-              placeholder="https://youtube.com/watch?v=..."
-            />
+            <label className="block text-xs font-medium text-foreground mb-1.5">YouTube URL</label>
+            <input type="url" value={form.youtube_url} onChange={e => handleYouTubeUrl(e.target.value)} className="input-field" placeholder="https://youtube.com/watch?v=..." />
           </div>
         ) : (
           <div>
-            <label className={labelClass}>Video URL</label>
-            <input
-              type="url"
-              value={form.video_url}
-              onChange={e => setForm(f => ({ ...f, video_url: e.target.value }))}
-              className={inputClass}
-              placeholder="https://example.com/video.mp4"
-            />
+            <label className="block text-xs font-medium text-foreground mb-1.5">Video URL</label>
+            <input type="url" value={form.video_url} onChange={e => setForm(f => ({ ...f, video_url: e.target.value }))} className="input-field" placeholder="https://example.com/video.mp4" />
           </div>
         )}
 
-        {/* Thumbnail preview */}
         {form.thumbnail_url && (
-          <div className="rounded-card-inner overflow-hidden aspect-video max-w-xs">
+          <div className="rounded-md overflow-hidden aspect-video max-w-xs">
             <img src={form.thumbnail_url} alt="Thumbnail" className="w-full h-full object-cover" />
           </div>
         )}
 
-        <div className="grid md:grid-cols-2 gap-4">
+        <div className="grid md:grid-cols-2 gap-3">
           <div>
-            <label className={labelClass}>Title</label>
-            <input type="text" value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))} className={inputClass} placeholder="Video title" />
+            <label className="block text-xs font-medium text-foreground mb-1.5">Title</label>
+            <input type="text" value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))} className="input-field" placeholder="Video title" />
           </div>
           <div>
-            <label className={labelClass}>Category</label>
-            <select value={form.category_id} onChange={e => setForm(f => ({ ...f, category_id: e.target.value }))} className={inputClass}>
+            <label className="block text-xs font-medium text-foreground mb-1.5">Category</label>
+            <select value={form.category_id} onChange={e => setForm(f => ({ ...f, category_id: e.target.value }))} className="input-field">
               {categories.map(c => <option key={c.id} value={c.id}>{c.icon} {c.name}</option>)}
             </select>
           </div>
         </div>
 
         <div>
-          <label className={labelClass}>Description</label>
-          <textarea value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} className={`${inputClass} min-h-[80px]`} placeholder="Brief description..." />
+          <label className="block text-xs font-medium text-foreground mb-1.5">Description</label>
+          <textarea value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} className="input-field min-h-[70px]" placeholder="Brief description..." />
         </div>
 
         <div>
-          <label className={labelClass}>Thumbnail URL</label>
-          <input type="url" value={form.thumbnail_url} onChange={e => setForm(f => ({ ...f, thumbnail_url: e.target.value }))} className={inputClass} placeholder="Auto-filled for YouTube" />
+          <label className="block text-xs font-medium text-foreground mb-1.5">Thumbnail URL</label>
+          <input type="url" value={form.thumbnail_url} onChange={e => setForm(f => ({ ...f, thumbnail_url: e.target.value }))} className="input-field" placeholder="Auto-filled for YouTube" />
         </div>
 
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-3 gap-3">
           <div>
-            <label className={labelClass}>Language</label>
-            <select value={form.language} onChange={e => setForm(f => ({ ...f, language: e.target.value }))} className={inputClass}>
+            <label className="block text-xs font-medium text-foreground mb-1.5">Language</label>
+            <select value={form.language} onChange={e => setForm(f => ({ ...f, language: e.target.value }))} className="input-field">
               <option>English</option>
               <option>Arabic</option>
               <option>Dhivehi</option>
@@ -167,32 +150,26 @@ export default function AddContent() {
             </select>
           </div>
           <div>
-            <label className={labelClass}>Age Min</label>
-            <input type="number" min={0} max={12} value={form.age_min} onChange={e => setForm(f => ({ ...f, age_min: +e.target.value }))} className={inputClass} />
+            <label className="block text-xs font-medium text-foreground mb-1.5">Age Min</label>
+            <input type="number" min={0} max={12} value={form.age_min} onChange={e => setForm(f => ({ ...f, age_min: +e.target.value }))} className="input-field" />
           </div>
           <div>
-            <label className={labelClass}>Age Max</label>
-            <input type="number" min={0} max={12} value={form.age_max} onChange={e => setForm(f => ({ ...f, age_max: +e.target.value }))} className={inputClass} />
+            <label className="block text-xs font-medium text-foreground mb-1.5">Age Max</label>
+            <input type="number" min={0} max={12} value={form.age_max} onChange={e => setForm(f => ({ ...f, age_max: +e.target.value }))} className="input-field" />
           </div>
         </div>
 
         <div>
-          <label className={labelClass}>Tags (comma separated)</label>
-          <input type="text" value={form.tags} onChange={e => setForm(f => ({ ...f, tags: e.target.value }))} className={inputClass} placeholder="learning, quran, fun" />
+          <label className="block text-xs font-medium text-foreground mb-1.5">Tags (comma separated)</label>
+          <input type="text" value={form.tags} onChange={e => setForm(f => ({ ...f, tags: e.target.value }))} className="input-field" placeholder="learning, quran" />
         </div>
 
-        <div>
-          <label className={labelClass}>Safety Notes</label>
-          <textarea value={form.safe_notes} onChange={e => setForm(f => ({ ...f, safe_notes: e.target.value }))} className={`${inputClass} min-h-[60px]`} placeholder="Any notes about content safety..." />
-        </div>
-
-        {/* Toggles */}
-        <div className="flex flex-wrap gap-6">
+        <div className="flex flex-wrap gap-5">
           {[
             { key: 'is_approved', label: 'Approved' },
             { key: 'is_featured', label: 'Featured' },
             { key: 'is_hidden', label: 'Hidden' },
-            { key: 'is_no_music', label: 'No Music 🔇' },
+            { key: 'is_no_music', label: 'No Music' },
           ].map(toggle => (
             <label key={toggle.key} className="flex items-center gap-2 cursor-pointer">
               <input
@@ -201,12 +178,12 @@ export default function AddContent() {
                 onChange={e => setForm(f => ({ ...f, [toggle.key]: e.target.checked }))}
                 className="w-4 h-4 rounded border-border text-primary focus:ring-primary/30"
               />
-              <span className="text-sm text-foreground">{toggle.label}</span>
+              <span className="text-xs text-foreground">{toggle.label}</span>
             </label>
           ))}
         </div>
 
-        <button type="submit" className="px-8 py-3 rounded-xl gradient-hero text-primary-foreground font-medium hover:shadow-lg transition-all">
+        <button type="submit" className="px-6 py-2.5 rounded-lg gradient-hero text-primary-foreground font-medium text-sm hover:shadow-lg hover:shadow-primary/20 transition-all">
           Save Video
         </button>
       </form>

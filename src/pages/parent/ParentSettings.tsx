@@ -19,87 +19,63 @@ export default function ParentSettings() {
     navigate('/parent/login');
   };
 
-  const inputClass = "w-full px-4 py-2.5 rounded-xl border border-border bg-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all text-sm";
-  const labelClass = "block text-sm font-medium text-foreground mb-1.5";
-
   return (
     <div className="p-6 md:p-8 max-w-2xl">
-      <h1 className="text-2xl font-bold text-foreground mb-6">Settings</h1>
+      <h1 className="text-xl font-bold text-foreground mb-6">Settings</h1>
 
-      {/* Parent Account */}
-      <section className="card-ceramic-elevated p-6 mb-6">
-        <h2 className="text-lg font-semibold text-foreground mb-4">Parent Account</h2>
-        <div className="space-y-3">
-          <div>
-            <label className={labelClass}>Email</label>
-            <input type="email" value={user?.email || ''} className={inputClass} disabled />
-          </div>
-          <p className="text-xs text-muted-foreground">Logged in as parent administrator.</p>
+      <section className="bg-card rounded-lg border border-border p-5 mb-4">
+        <h2 className="text-sm font-semibold text-foreground mb-4">Parent Account</h2>
+        <div>
+          <label className="block text-xs font-medium text-foreground mb-1.5">Email</label>
+          <input type="email" value={user?.email || ''} className="input-field" disabled />
         </div>
       </section>
 
-      {/* Child Profile */}
-      <section className="card-ceramic-elevated p-6 mb-6">
-        <h2 className="text-lg font-semibold text-foreground mb-4">Child Profile</h2>
+      <section className="bg-card rounded-lg border border-border p-5 mb-4">
+        <h2 className="text-sm font-semibold text-foreground mb-4">Child Profile</h2>
         <div className="space-y-4">
           <div>
-            <label className={labelClass}>Child's Name</label>
-            <input type="text" value={profile.name} onChange={e => setProfile(p => ({ ...p, name: e.target.value }))} className={inputClass} placeholder="Enter child's name" />
-            <p className="text-xs text-muted-foreground mt-1">This name will appear on the kids home screen.</p>
+            <label className="block text-xs font-medium text-foreground mb-1.5">Child's Name</label>
+            <input type="text" value={profile.name} onChange={e => setProfile(p => ({ ...p, name: e.target.value }))} className="input-field" placeholder="Enter child's name" />
+            <p className="text-[10px] text-muted-foreground mt-1">Shown on kids home screen</p>
           </div>
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-3 gap-3">
             <div>
-              <label className={labelClass}>Age</label>
-              <input type="number" min={0} max={12} value={profile.age} onChange={e => setProfile(p => ({ ...p, age: +e.target.value }))} className={inputClass} />
+              <label className="block text-xs font-medium text-foreground mb-1.5">Age</label>
+              <input type="number" min={0} max={12} value={profile.age} onChange={e => setProfile(p => ({ ...p, age: +e.target.value }))} className="input-field" />
             </div>
             <div>
-              <label className={labelClass}>Age Min</label>
-              <input type="number" min={0} max={12} value={profile.default_age_min} onChange={e => setProfile(p => ({ ...p, default_age_min: +e.target.value }))} className={inputClass} />
+              <label className="block text-xs font-medium text-foreground mb-1.5">Min Age</label>
+              <input type="number" min={0} max={12} value={profile.default_age_min} onChange={e => setProfile(p => ({ ...p, default_age_min: +e.target.value }))} className="input-field" />
             </div>
             <div>
-              <label className={labelClass}>Age Max</label>
-              <input type="number" min={0} max={12} value={profile.default_age_max} onChange={e => setProfile(p => ({ ...p, default_age_max: +e.target.value }))} className={inputClass} />
+              <label className="block text-xs font-medium text-foreground mb-1.5">Max Age</label>
+              <input type="number" min={0} max={12} value={profile.default_age_max} onChange={e => setProfile(p => ({ ...p, default_age_max: +e.target.value }))} className="input-field" />
             </div>
           </div>
         </div>
       </section>
 
-      {/* App Branding */}
-      <section className="card-ceramic-elevated p-6 mb-6">
-        <h2 className="text-lg font-semibold text-foreground mb-4">App Branding</h2>
-        <div className="space-y-3">
-          <div>
-            <label className={labelClass}>App Name</label>
-            <input type="text" defaultValue="Halal Play" className={inputClass} disabled />
+      <section className="bg-card rounded-lg border border-border p-5 mb-6">
+        <h2 className="text-sm font-semibold text-foreground mb-3">Safety</h2>
+        <div className="space-y-2 text-xs text-muted-foreground">
+          <div className="flex items-center gap-2 p-2.5 rounded-md bg-secondary">
+            🔒 Parent lock PIN: <strong className="text-foreground">1234</strong>
           </div>
-          <p className="text-xs text-muted-foreground">Safe Islamic videos for kids</p>
-        </div>
-      </section>
-
-      {/* Safety Info */}
-      <section className="card-ceramic-elevated p-6 mb-6">
-        <h2 className="text-lg font-semibold text-foreground mb-4">Safety Features</h2>
-        <div className="space-y-3 text-sm text-muted-foreground">
-          <div className="flex items-center gap-3 p-3 rounded-xl bg-primary/5">
-            <span>🔒</span> <span>Parent lock PIN: <strong className="text-foreground">1234</strong></span>
+          <div className="flex items-center gap-2 p-2.5 rounded-md bg-secondary">
+            🛡️ Embedded player only — no external navigation
           </div>
-          <div className="flex items-center gap-3 p-3 rounded-xl bg-primary/5">
-            <span>🛡️</span> <span>YouTube embedded player — no external navigation</span>
-          </div>
-          <div className="flex items-center gap-3 p-3 rounded-xl bg-primary/5">
-            <span>🚫</span> <span>No search for kids — category browsing only</span>
-          </div>
-          <div className="flex items-center gap-3 p-3 rounded-xl bg-primary/5">
-            <span>✅</span> <span>Only parent-approved videos shown to kids</span>
+          <div className="flex items-center gap-2 p-2.5 rounded-md bg-secondary">
+            ✅ Only approved videos shown to kids
           </div>
         </div>
       </section>
 
       <div className="flex gap-3">
-        <button onClick={handleSave} className="px-8 py-3 rounded-xl gradient-hero text-primary-foreground font-semibold hover:shadow-lg transition-all">
+        <button onClick={handleSave} className="px-6 py-2.5 rounded-lg gradient-hero text-primary-foreground font-medium text-sm hover:shadow-lg hover:shadow-primary/20 transition-all">
           Save Settings
         </button>
-        <button onClick={handleSignOut} className="px-6 py-3 rounded-xl border border-destructive text-destructive font-medium hover:bg-destructive/10 transition-all">
+        <button onClick={handleSignOut} className="px-5 py-2.5 rounded-lg border border-destructive text-destructive font-medium text-sm hover:bg-destructive/10 transition-all">
           Sign Out
         </button>
       </div>

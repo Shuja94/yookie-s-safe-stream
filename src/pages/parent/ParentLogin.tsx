@@ -54,7 +54,7 @@ export default function ParentLogin() {
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      <button onClick={() => navigate('/')} className="absolute top-4 left-4 p-2 rounded-lg text-muted-foreground hover:bg-muted transition-colors">
+      <button onClick={() => navigate('/')} className="absolute top-4 left-4 p-2 rounded-lg text-muted-foreground hover:bg-secondary transition-colors">
         <ArrowLeft className="w-5 h-5" />
       </button>
 
@@ -64,47 +64,47 @@ export default function ParentLogin() {
         className="w-full max-w-sm"
       >
         <div className="text-center mb-8">
-          <div className="w-16 h-16 rounded-2xl gradient-hero mx-auto mb-4 flex items-center justify-center">
-            <Lock className="w-7 h-7 text-primary-foreground" />
+          <div className="w-14 h-14 rounded-xl gradient-hero mx-auto mb-4 flex items-center justify-center">
+            <Lock className="w-6 h-6 text-primary-foreground" />
           </div>
-          <h1 className="text-2xl font-bold text-foreground">
+          <h1 className="text-xl font-bold text-foreground">
             {isSignUp ? 'Create Account' : 'Parent Access'}
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
-            {isSignUp ? 'Sign up to manage Halal Play' : 'Secure login to manage Halal Play'}
+            {isSignUp ? 'Sign up to manage content' : 'Sign in to manage Halal Play'}
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {isSignUp && (
             <div>
-              <label className="block text-sm font-medium text-foreground mb-1.5">Name</label>
+              <label className="block text-xs font-medium text-foreground mb-1.5">Name</label>
               <input
                 type="text"
                 value={displayName}
                 onChange={e => setDisplayName(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border border-border bg-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all"
+                className="input-field"
                 placeholder="Your name"
               />
             </div>
           )}
           <div>
-            <label className="block text-sm font-medium text-foreground mb-1.5">Email</label>
+            <label className="block text-xs font-medium text-foreground mb-1.5">Email</label>
             <input
               type="email"
               value={email}
               onChange={e => setEmail(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl border border-border bg-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all"
+              className="input-field"
               placeholder="parent@email.com"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-foreground mb-1.5">Password</label>
+            <label className="block text-xs font-medium text-foreground mb-1.5">Password</label>
             <input
               type="password"
               value={password}
               onChange={e => setPassword(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl border border-border bg-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all"
+              className="input-field"
               placeholder="••••••••"
             />
           </div>
@@ -115,14 +115,14 @@ export default function ParentLogin() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 rounded-xl gradient-hero text-primary-foreground font-medium hover:shadow-lg transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+            className="w-full py-3 rounded-lg gradient-hero text-primary-foreground font-medium hover:shadow-lg hover:shadow-primary/20 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
           >
             {loading && <Loader2 className="w-4 h-4 animate-spin" />}
             {isSignUp ? 'Create Account' : 'Sign In'}
           </button>
         </form>
 
-        <p className="text-center text-sm text-muted-foreground mt-6">
+        <p className="text-center text-xs text-muted-foreground mt-6">
           {isSignUp ? 'Already have an account?' : "Don't have an account?"}{' '}
           <button
             onClick={() => { setIsSignUp(!isSignUp); setError(''); setConfirmMessage(''); }}

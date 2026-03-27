@@ -14,8 +14,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        display: ["Lexend", "Nunito", "sans-serif"],
-        body: ["Nunito", "Lexend", "sans-serif"],
+        display: ["Plus Jakarta Sans", "Inter", "sans-serif"],
+        body: ["Inter", "Plus Jakarta Sans", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -66,8 +66,6 @@ export default {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
-        card: "var(--card-radius, 1.5rem)",
-        "card-inner": "var(--card-inner-radius, 1rem)",
       },
       boxShadow: {
         soft: "var(--shadow-soft)",

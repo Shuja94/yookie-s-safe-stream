@@ -3,6 +3,8 @@ import { store } from '@/lib/store';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Heart, SkipForward } from 'lucide-react';
 import { useState, useEffect, useCallback } from 'react';
+import { VideoCard } from '@/components/shared/VideoCard';
+import { VideoRow } from '@/components/shared/VideoRow';
 
 export default function VideoPlayer() {
   const { id } = useParams<{ id: string }>();
@@ -26,14 +28,13 @@ export default function VideoPlayer() {
 
   if (!video) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-black">
-        <p className="text-white">Video not found</p>
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <p className="text-muted-foreground">Video not found</p>
       </div>
     );
   }
 
-  const recommendations = store.getRecommendations(video.id, store.profile.age, 4);
-  const nextVideo = recommendations[0];
+  const recommendations = store.getRecommendations(video.id, store.profile.age, 8);
 
   const getEmbedUrl = () => {
     if (video.source_type === 'youtube' && video.youtube_video_id) {
@@ -43,25 +44,23 @@ export default function VideoPlayer() {
   };
 
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen bg-background">
       {/* Top bar */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         className="absolute top-0 left-0 right-0 z-10 flex items-center justify-between p-4"
       >
-        <button onClick={() => navigate(-1)} className="p-2 rounded-xl bg-black/50 text-white backdrop-blur-sm hover:bg-black/70 transition-colors">
+        <button onClick={() => navigate(-1)} className="p-2 rounded-lg bg-background/60 text-foreground backdrop-blur-sm hover:bg-background/80 transition-colors">
           <ArrowLeft className="w-5 h-5" />
         </button>
-        <div className="flex gap-2">
-          <button onClick={handleFavorite} className="p-2 rounded-xl bg-black/50 text-white backdrop-blur-sm hover:bg-black/70 transition-colors">
-            <Heart className={`w-5 h-5 ${isFav ? 'fill-red-500 text-red-500' : ''}`} />
-          </button>
-        </div>
+        <button onClick={handleFavorite} className="p-2 rounded-lg bg-background/60 text-foreground backdrop-blur-sm hover:bg-background/80 transition-colors">
+          <Heart className={`w-5 h-5 ${isFav ? 'fill-primary text-primary' : ''}`} />
+        </button>
       </motion.div>
 
       {/* Player */}
-      <div className="w-full aspect-video md:h-[70vh] bg-black">
+      <div className="w-full aspect-video md:aspect-[21/9] bg-background">
         {video.source_type === 'youtube' ? (
           <iframe
             src={getEmbedUrl()}
@@ -81,31 +80,22 @@ export default function VideoPlayer() {
         )}
       </div>
 
-      {/* Info below player */}
-      <div className="bg-background p-4 md:p-8">
-        <h2 className="text-xl font-bold text-foreground mb-1">{video.title}</h2>
-        <p className="text-sm text-muted-foreground mb-4">{video.description}</p>
-
-        {nextVideo && (
-          <div className="mt-4">
-            <h3 className="text-sm font-semibold text-muted-foreground mb-3">Up Next</h3>
-            <button
-              onClick={() => navigate(`/player/${nextVideo.id}`)}
-              className="flex items-center gap-4 p-3 rounded-[var(--card-radius)] bg-card hover:bg-muted transition-colors w-full text-left"
-              style={{ boxShadow: 'var(--shadow-soft)' }}
-            >
-              <div className="w-32 aspect-video rounded-[var(--card-inner-radius)] overflow-hidden flex-shrink-0">
-                <img src={nextVideo.thumbnail_url} alt={nextVideo.title} className="w-full h-full object-cover" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-foreground line-clamp-2">{nextVideo.title}</p>
-                <p className="text-xs text-muted-foreground mt-1">{store.getCategory(nextVideo.category_id)?.name}</p>
-              </div>
-              <SkipForward className="w-5 h-5 text-muted-foreground flex-shrink-0" />
-            </button>
-          </div>
-        )}
+      {/* Info */}
+      <div className="px-5 md:px-12 py-6">
+        <h2 className="text-lg md:text-xl font-bold text-foreground mb-1">{video.title}</h2>
+        <p className="text-sm text-muted-foreground mb-6">{video.description}</p>
       </div>
+
+      {/* More Like This */}
+      {recommendations.length > 0 && (
+        <VideoRow title="More Like This" delay={0.1}>
+          {recommendations.map(v => (
+            <VideoCard key={v.id} video={v} category={store.getCategory(v.category_id)} />
+          ))}
+        </VideoRow>
+      )}
+
+      <div className="h-8" />
     </div>
   );
 }
