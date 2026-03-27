@@ -21,8 +21,22 @@ export default function CategoryBrowse() {
         <p className="text-sm text-muted-foreground">Browse by category</p>
       </motion.header>
 
-      {/* Category chips */}
+      {/* Filter chips */}
       <div className="px-4 md:px-8 flex flex-wrap gap-2 mb-6">
+        <motion.button
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          onClick={() => setNoMusicOnly(!noMusicOnly)}
+          className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-medium transition-colors border ${
+            noMusicOnly
+              ? 'bg-primary text-primary-foreground border-primary'
+              : 'bg-card border-border text-foreground hover:bg-muted'
+          }`}
+          style={{ boxShadow: 'var(--shadow-soft)' }}
+        >
+          <span>🔇</span>
+          <span>No Music Only</span>
+        </motion.button>
         {categories.map((cat, i) => {
           const count = store.getVideosByCategory(cat.id, age).length;
           return (
