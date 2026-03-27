@@ -6,7 +6,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { VideoCard } from '@/components/shared/VideoCard';
 import { VideoRow } from '@/components/shared/VideoRow';
 
-export default function VideoPlayer() {
+const VideoPlayer = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const video = store.getVideo(id || '');
