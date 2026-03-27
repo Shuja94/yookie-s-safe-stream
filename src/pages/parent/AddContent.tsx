@@ -70,6 +70,7 @@ export default function AddContent() {
       is_featured: form.is_featured,
       is_approved: form.is_approved,
       is_hidden: form.is_hidden,
+      is_no_music: form.is_no_music,
       safe_notes: form.safe_notes,
     });
 
