@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { store } from '@/lib/store';
 import { getAvatarEmoji } from '@/components/child/AvatarPickerModal';
 import { Plus, Lock, Edit2, Trash2, X, Check } from 'lucide-react';
+import { ParentLockModal } from '@/components/shared/ParentLockModal';
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Profile } from '@/types';
