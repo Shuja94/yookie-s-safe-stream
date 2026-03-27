@@ -12,25 +12,25 @@ export default function CategoryBrowse() {
   return (
     <div className="min-h-screen bg-background">
       <motion.header
-        initial={{ opacity: 0, y: -10 }}
+        initial={{ opacity: 0, y: -8 }}
         animate={{ opacity: 1, y: 0 }}
-        className="px-5 md:px-12 pt-6 pb-4"
+        className="px-5 md:px-12 pt-6 pb-3"
       >
-        <h1 className="text-xl md:text-2xl font-bold text-foreground">Explore</h1>
-        <p className="text-sm text-muted-foreground">Browse by category</p>
+        <h1 className="text-xl md:text-2xl font-extrabold text-foreground">Explore</h1>
+        <p className="text-xs text-muted-foreground mt-0.5">Browse by category</p>
       </motion.header>
 
-      {/* Filter chips */}
-      <div className="px-5 md:px-12 flex flex-wrap gap-2 mb-6">
+      {/* Filter */}
+      <div className="px-5 md:px-12 mb-5">
         <button
           onClick={() => setNoMusicOnly(!noMusicOnly)}
-          className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-medium transition-colors ${
+          className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold transition-all ${
             noMusicOnly
-              ? 'bg-primary text-primary-foreground'
-              : 'bg-secondary text-secondary-foreground hover:bg-muted'
+              ? 'bg-primary text-primary-foreground shadow-glow'
+              : 'bg-surface-2 text-secondary-foreground hover:bg-surface-3'
           }`}
         >
-          🔇 No Music Only
+          🔇 No Music
         </button>
       </div>
 
@@ -40,7 +40,7 @@ export default function CategoryBrowse() {
         const vids = noMusicOnly ? allVids.filter(v => v.is_no_music) : allVids;
         if (vids.length === 0) return null;
         return (
-          <VideoRow key={cat.id} title={`${cat.icon} ${cat.name}`} delay={0.05 + i * 0.03}>
+          <VideoRow key={cat.id} title={`${cat.icon} ${cat.name}`} delay={0.04 + i * 0.03}>
             {vids.map(v => (
               <VideoCard key={v.id} video={v} category={cat} />
             ))}

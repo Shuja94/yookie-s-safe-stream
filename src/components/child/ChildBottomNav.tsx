@@ -1,30 +1,40 @@
-import { Home, Grid3X3, Heart } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
+import { Home, Heart, Grid3X3 } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const navItems = [
   { to: '/home', icon: Home, label: 'Home' },
-  { to: '/categories', icon: Grid3X3, label: 'Explore' },
   { to: '/favorites', icon: Heart, label: 'Favorites' },
+  { to: '/categories', icon: Grid3X3, label: 'Explore' },
 ];
 
 export function ChildBottomNav() {
   return (
     <nav className="bottom-nav">
-      <div className="flex items-center justify-around py-2.5 px-4 max-w-lg mx-auto">
+      <div className="flex items-center justify-around px-2 py-1.5">
         {navItems.map(item => (
           <NavLink
             key={item.to}
             to={item.to}
             className={({ isActive }) =>
-              `flex flex-col items-center gap-0.5 px-5 py-1.5 rounded-2xl transition-all min-w-[60px] ${
-                isActive
-                  ? 'text-primary bg-primary/10 scale-105'
-                  : 'text-muted-foreground hover:text-foreground active:scale-95'
+              `relative flex flex-col items-center gap-0.5 px-5 py-1.5 rounded-xl transition-all duration-200 ${
+                isActive ? 'text-primary' : 'text-muted-foreground'
               }`
             }
           >
-            <item.icon className="w-5 h-5" />
-            <span className="text-[10px] font-bold">{item.label}</span>
+            {({ isActive }) => (
+              <>
+                {isActive && (
+                  <motion.div
+                    layoutId="nav-indicator"
+                    className="absolute -top-1 w-5 h-0.5 rounded-full bg-primary"
+                    transition={{ type: 'spring', stiffness: 500, damping: 35 }}
+                  />
+                )}
+                <item.icon className="w-[22px] h-[22px]" strokeWidth={isActive ? 2.5 : 2} />
+                <span className="text-[10px] font-semibold">{item.label}</span>
+              </>
+            )}
           </NavLink>
         ))}
       </div>

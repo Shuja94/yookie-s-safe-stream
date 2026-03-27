@@ -17,12 +17,12 @@ export default function Favorites() {
   return (
     <div className="min-h-screen bg-background">
       <motion.header
-        initial={{ opacity: 0, y: -10 }}
+        initial={{ opacity: 0, y: -8 }}
         animate={{ opacity: 1, y: 0 }}
-        className="px-5 md:px-12 pt-6 pb-4"
+        className="px-5 md:px-12 pt-6 pb-3"
       >
-        <h1 className="text-xl md:text-2xl font-bold text-foreground">{store.profile.name}'s Favorites</h1>
-        <p className="text-sm text-muted-foreground">Videos you love the most</p>
+        <h1 className="text-xl md:text-2xl font-extrabold text-foreground">❤️ {store.profile.name}'s Favorites</h1>
+        <p className="text-xs text-muted-foreground mt-0.5">Videos you love</p>
       </motion.header>
 
       {favorites.length === 0 ? (
@@ -32,13 +32,13 @@ export default function Favorites() {
           description="Tap the heart on any video to add it here!"
         />
       ) : (
-        <div className="px-5 md:px-12 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+        <div className="px-5 md:px-12 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
           {favorites.map((v, i) => (
             <motion.div
               key={v.id}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.04 }}
+              transition={{ delay: i * 0.03 }}
             >
               <VideoCard video={v} category={store.getCategory(v.category_id)} size="sm" />
             </motion.div>
