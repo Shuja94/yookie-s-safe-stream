@@ -47,7 +47,7 @@ export default function ChildHome() {
       >
         <div className="flex items-center gap-3">
           <button
-            onClick={() => setAvatarOpen(true)}
+            onClick={() => { store.clearActiveProfile(); navigate('/profile'); }}
             className="w-9 h-9 rounded-full bg-surface-2 flex items-center justify-center text-lg hover:scale-110 active:scale-90 transition-transform ring-2 ring-primary/20"
           >
             {getAvatarEmoji(profile.avatar_url || 'lion')}

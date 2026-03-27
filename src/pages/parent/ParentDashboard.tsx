@@ -54,28 +54,34 @@ export default function ParentDashboard() {
         ))}
       </div>
 
-      {/* Child profile card */}
+      {/* Child profiles */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.15 }}
         className="bg-card rounded-lg p-5 border border-border mb-6"
       >
-        <h2 className="text-sm font-semibold text-foreground mb-3">Child Profile</h2>
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-lg bg-secondary flex items-center justify-center text-2xl">
-            {getAvatarEmoji(store.profile.avatar_url || 'lion')}
-          </div>
-          <div className="flex-1">
-            <p className="font-semibold text-foreground">{store.profile.name}</p>
-            <p className="text-xs text-muted-foreground">Age {store.profile.age} • Content {store.profile.default_age_min}–{store.profile.default_age_max}y</p>
-          </div>
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-sm font-semibold text-foreground">Child Profiles</h2>
           <button
             onClick={() => navigate('/parent/settings')}
             className="text-xs text-primary font-medium hover:underline"
           >
-            Edit
+            Manage
           </button>
+        </div>
+        <div className="space-y-3">
+          {store.profiles.map(p => (
+            <div key={p.id} className="flex items-center gap-4">
+              <div className="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center text-xl">
+                {getAvatarEmoji(p.avatar_url || 'lion')}
+              </div>
+              <div className="flex-1">
+                <p className="font-semibold text-foreground text-sm">{p.name}</p>
+                <p className="text-xs text-muted-foreground">Age {p.age}</p>
+              </div>
+            </div>
+          ))}
         </div>
       </motion.div>
 
