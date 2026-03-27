@@ -4,7 +4,7 @@ import { Settings } from 'lucide-react';
 import { store } from '@/lib/store';
 import { useState } from 'react';
 import { ParentLockModal } from '@/components/shared/ParentLockModal';
-import yookieAvatar from '@/assets/yookie-avatar.png';
+import { getAvatarEmoji } from '@/components/child/AvatarPickerModal';
 
 export default function ProfileSelect() {
   const navigate = useNavigate();
@@ -46,8 +46,8 @@ export default function ProfileSelect() {
         onClick={() => navigate('/home')}
         className="card-ceramic-elevated p-6 md:p-8 flex flex-col items-center gap-4 cursor-pointer"
       >
-        <div className="w-28 h-28 md:w-36 md:h-36 rounded-[2rem] gradient-sky flex items-center justify-center overflow-hidden">
-          <img src={yookieAvatar} alt="Yookie" className="w-full h-full object-cover" />
+        <div className="w-28 h-28 md:w-36 md:h-36 rounded-[2rem] bg-primary/10 flex items-center justify-center">
+          <span className="text-6xl md:text-7xl">{getAvatarEmoji(profile.avatar_url || 'lion')}</span>
         </div>
         <div>
           <h2 className="text-xl font-bold text-foreground">{profile.name}</h2>
