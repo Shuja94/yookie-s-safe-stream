@@ -10,10 +10,8 @@ export default function VideoPlayer() {
   const video = store.getVideo(id || '');
   const [isFav, setIsFav] = useState(video ? store.isFavorite(video.id) : false);
 
-  // Track progress
   useEffect(() => {
     if (!video) return;
-    // Simulate watch progress tracking
     const interval = setInterval(() => {
       store.updateWatchProgress(video.id, 60, false);
     }, 30000);
@@ -28,8 +26,8 @@ export default function VideoPlayer() {
 
   if (!video) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-foreground">
-        <p className="text-primary-foreground">Video not found</p>
+      <div className="min-h-screen flex items-center justify-center bg-black">
+        <p className="text-white">Video not found</p>
       </div>
     );
   }
@@ -39,31 +37,31 @@ export default function VideoPlayer() {
 
   const getEmbedUrl = () => {
     if (video.source_type === 'youtube' && video.youtube_video_id) {
-      return `https://www.youtube-nocookie.com/embed/${video.youtube_video_id}?rel=0&modestbranding=1&showinfo=0&autoplay=1&controls=1`;
+      return `https://www.youtube-nocookie.com/embed/${video.youtube_video_id}?rel=0&modestbranding=1&showinfo=0&autoplay=1&controls=1&disablekb=0&fs=1&iv_load_policy=3&playsinline=1`;
     }
     return video.video_url || '';
   };
 
   return (
-    <div className="min-h-screen bg-foreground">
+    <div className="min-h-screen bg-black">
       {/* Top bar */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         className="absolute top-0 left-0 right-0 z-10 flex items-center justify-between p-4"
       >
-        <button onClick={() => navigate(-1)} className="p-2 rounded-lg bg-foreground/50 text-primary-foreground backdrop-blur-sm hover:bg-foreground/70 transition-colors">
+        <button onClick={() => navigate(-1)} className="p-2 rounded-xl bg-black/50 text-white backdrop-blur-sm hover:bg-black/70 transition-colors">
           <ArrowLeft className="w-5 h-5" />
         </button>
         <div className="flex gap-2">
-          <button onClick={handleFavorite} className="p-2 rounded-lg bg-foreground/50 text-primary-foreground backdrop-blur-sm hover:bg-foreground/70 transition-colors">
-            <Heart className={`w-5 h-5 ${isFav ? 'fill-accent text-accent' : ''}`} />
+          <button onClick={handleFavorite} className="p-2 rounded-xl bg-black/50 text-white backdrop-blur-sm hover:bg-black/70 transition-colors">
+            <Heart className={`w-5 h-5 ${isFav ? 'fill-red-500 text-red-500' : ''}`} />
           </button>
         </div>
       </motion.div>
 
       {/* Player */}
-      <div className="w-full aspect-video md:h-[70vh] bg-foreground">
+      <div className="w-full aspect-video md:h-[70vh] bg-black">
         {video.source_type === 'youtube' ? (
           <iframe
             src={getEmbedUrl()}
@@ -71,6 +69,7 @@ export default function VideoPlayer() {
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
             title={video.title}
+            sandbox="allow-scripts allow-same-origin allow-presentation"
           />
         ) : (
           <video
@@ -87,16 +86,15 @@ export default function VideoPlayer() {
         <h2 className="text-xl font-bold text-foreground mb-1">{video.title}</h2>
         <p className="text-sm text-muted-foreground mb-4">{video.description}</p>
 
-        {/* Next up */}
         {nextVideo && (
           <div className="mt-4">
             <h3 className="text-sm font-semibold text-muted-foreground mb-3">Up Next</h3>
             <button
               onClick={() => navigate(`/player/${nextVideo.id}`)}
-              className="flex items-center gap-4 p-3 rounded-card bg-card hover:bg-muted transition-colors w-full text-left"
+              className="flex items-center gap-4 p-3 rounded-[var(--card-radius)] bg-card hover:bg-muted transition-colors w-full text-left"
               style={{ boxShadow: 'var(--shadow-soft)' }}
             >
-              <div className="w-32 aspect-video rounded-card-inner overflow-hidden flex-shrink-0">
+              <div className="w-32 aspect-video rounded-[var(--card-inner-radius)] overflow-hidden flex-shrink-0">
                 <img src={nextVideo.thumbnail_url} alt={nextVideo.title} className="w-full h-full object-cover" />
               </div>
               <div className="flex-1 min-w-0">
