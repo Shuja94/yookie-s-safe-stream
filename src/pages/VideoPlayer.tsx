@@ -112,4 +112,6 @@ const VideoPlayer = () => {
       <div className="h-8" />
     </div>
   );
-}
+};
+
+export default VideoPlayer;
