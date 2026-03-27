@@ -4,7 +4,7 @@ import { Settings } from 'lucide-react';
 import { store } from '@/lib/store';
 import { useState } from 'react';
 import { ParentLockModal } from '@/components/shared/ParentLockModal';
-import yookieAvatar from '@/assets/yookie-avatar.png';
+import { getAvatarEmoji } from '@/components/child/AvatarPickerModal';
 
 export default function ProfileSelect() {
   const navigate = useNavigate();
