@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { store } from '@/lib/store';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Heart, SkipForward } from 'lucide-react';
+import { ArrowLeft, Heart } from 'lucide-react';
 import { useState, useEffect, useCallback } from 'react';
 import { VideoCard } from '@/components/shared/VideoCard';
 import { VideoRow } from '@/components/shared/VideoRow';
@@ -14,6 +14,7 @@ export default function VideoPlayer() {
 
   useEffect(() => {
     if (!video) return;
+    store.updateWatchProgress(video.id, 30, false);
     const interval = setInterval(() => {
       store.updateWatchProgress(video.id, 60, false);
     }, 30000);
@@ -34,7 +35,8 @@ export default function VideoPlayer() {
     );
   }
 
-  const recommendations = store.getRecommendations(video.id, store.profile.age, 8);
+  const recommendations = store.getRecommendations(video.id, store.profile.age, 10);
+  const category = store.getCategory(video.category_id);
 
   const getEmbedUrl = () => {
     if (video.source_type === 'youtube' && video.youtube_video_id) {
@@ -45,22 +47,28 @@ export default function VideoPlayer() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Top bar */}
+      {/* Top controls */}
       <motion.div
-        initial={{ opacity: 0, y: -10 }}
+        initial={{ opacity: 0, y: -8 }}
         animate={{ opacity: 1, y: 0 }}
-        className="absolute top-0 left-0 right-0 z-10 flex items-center justify-between p-4"
+        className="absolute top-0 left-0 right-0 z-10 flex items-center justify-between p-3"
       >
-        <button onClick={() => navigate(-1)} className="p-2 rounded-lg bg-background/60 text-foreground backdrop-blur-sm hover:bg-background/80 transition-colors">
+        <button
+          onClick={() => navigate(-1)}
+          className="p-2.5 rounded-full bg-background/50 backdrop-blur-md text-foreground hover:bg-background/70 transition-all"
+        >
           <ArrowLeft className="w-5 h-5" />
         </button>
-        <button onClick={handleFavorite} className="p-2 rounded-lg bg-background/60 text-foreground backdrop-blur-sm hover:bg-background/80 transition-colors">
+        <button
+          onClick={handleFavorite}
+          className="p-2.5 rounded-full bg-background/50 backdrop-blur-md text-foreground hover:bg-background/70 transition-all"
+        >
           <Heart className={`w-5 h-5 ${isFav ? 'fill-primary text-primary' : ''}`} />
         </button>
       </motion.div>
 
       {/* Player */}
-      <div className="w-full aspect-video md:aspect-[21/9] bg-background">
+      <div className="w-full aspect-video md:aspect-[2.2/1] bg-background relative">
         {video.source_type === 'youtube' ? (
           <iframe
             src={getEmbedUrl()}
@@ -71,20 +79,26 @@ export default function VideoPlayer() {
             sandbox="allow-scripts allow-same-origin allow-presentation"
           />
         ) : (
-          <video
-            src={video.video_url}
-            className="w-full h-full"
-            controls
-            autoPlay
-          />
+          <video src={video.video_url} className="w-full h-full" controls autoPlay />
         )}
       </div>
 
-      {/* Info */}
-      <div className="px-5 md:px-12 py-6">
-        <h2 className="text-lg md:text-xl font-bold text-foreground mb-1">{video.title}</h2>
-        <p className="text-sm text-muted-foreground mb-6">{video.description}</p>
-      </div>
+      {/* Video info */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="px-5 md:px-12 py-5"
+      >
+        <h2 className="text-lg md:text-xl font-bold text-foreground mb-1.5">{video.title}</h2>
+        <div className="flex items-center gap-2 mb-3">
+          {category && (
+            <span className="text-xs text-muted-foreground">{category.icon} {category.name}</span>
+          )}
+          {video.is_no_music && <span className="age-badge text-[10px]">🔇 No Music</span>}
+        </div>
+        <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl">{video.description}</p>
+      </motion.div>
 
       {/* More Like This */}
       {recommendations.length > 0 && (
