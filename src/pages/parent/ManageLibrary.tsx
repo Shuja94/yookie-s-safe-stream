@@ -3,11 +3,14 @@ import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import { Search, Eye, EyeOff, Star, Trash2, Edit, CheckCircle, Clock } from 'lucide-react';
 import { toast } from 'sonner';
+import { EditVideoModal } from '@/components/parent/EditVideoModal';
+import { Video } from '@/types';
 
 export default function ManageLibrary() {
   const [, setTick] = useState(0);
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState<'all' | 'approved' | 'pending' | 'hidden'>('all');
+  const [editingVideo, setEditingVideo] = useState<Video | null>(null);
 
   useEffect(() => {
     const unsub = store.subscribe(() => setTick(t => t + 1));
@@ -113,8 +116,15 @@ export default function ManageLibrary() {
                         <span className="inline-flex items-center gap-1 text-xs text-accent"><Clock className="w-3 h-3" /> Pending</span>
                       )}
                     </td>
-                    <td className="p-4">
+                     <td className="p-4">
                       <div className="flex items-center justify-end gap-1">
+                        <button
+                          onClick={() => setEditingVideo(video)}
+                          className="p-2 rounded-lg hover:bg-muted text-muted-foreground transition-colors"
+                          title="Edit"
+                        >
+                          <Edit className="w-4 h-4" />
+                        </button>
                         <button
                           onClick={() => { store.updateVideo(video.id, { is_approved: !video.is_approved }); toast.success(video.is_approved ? 'Unapproved' : 'Approved'); }}
                           className="p-2 rounded-lg hover:bg-muted text-muted-foreground transition-colors"
@@ -155,6 +165,10 @@ export default function ManageLibrary() {
           <div className="py-12 text-center text-muted-foreground text-sm">No videos found</div>
         )}
       </div>
+
+      {editingVideo && (
+        <EditVideoModal video={editingVideo} onClose={() => { setEditingVideo(null); setTick(t => t + 1); }} />
+      )}
     </div>
   );
 }

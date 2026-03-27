@@ -29,7 +29,7 @@ export function ParentLayout() {
       {/* Sidebar */}
       <aside className={`${collapsed ? 'w-16' : 'w-64'} border-r border-border bg-card flex-shrink-0 flex flex-col transition-all duration-300`}>
         <div className="p-4 flex items-center justify-between border-b border-border">
-          {!collapsed && <h2 className="text-lg font-bold text-primary">YookiePlay</h2>}
+          {!collapsed && <h2 className="text-lg font-bold text-primary">Halal Play</h2>}
           <button onClick={() => setCollapsed(!collapsed)} className="p-1.5 rounded-lg hover:bg-muted text-muted-foreground transition-colors">
             {collapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
           </button>

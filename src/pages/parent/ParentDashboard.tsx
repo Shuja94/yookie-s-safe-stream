@@ -23,7 +23,7 @@ export default function ParentDashboard() {
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-2xl font-bold text-foreground">Dashboard</h1>
-          <p className="text-sm text-muted-foreground">Yookie has spent time learning today</p>
+          <p className="text-sm text-muted-foreground">Manage your child's video library</p>
         </div>
         <button
           onClick={() => navigate('/parent/add')}
