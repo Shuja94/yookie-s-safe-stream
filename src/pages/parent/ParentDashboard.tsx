@@ -15,10 +15,10 @@ export default function ParentDashboard() {
   const history = store.getWatchHistory();
 
   const stats = [
-    { label: 'Approved', value: approved.length, icon: CheckCircle, color: 'text-primary' },
-    { label: 'Pending', value: pending.length, icon: Clock, color: 'text-yellow-500' },
-    { label: 'Hidden', value: hidden.length, icon: EyeOff, color: 'text-muted-foreground' },
-    { label: 'Watch Events', value: history.length, icon: TrendingUp, color: 'text-blue-400' },
+    { label: 'Approved', value: approved.length, icon: CheckCircle, color: 'text-primary', path: '/parent/library?filter=approved' },
+    { label: 'Pending', value: pending.length, icon: Clock, color: 'text-yellow-500', path: '/parent/library?filter=pending' },
+    { label: 'Hidden', value: hidden.length, icon: EyeOff, color: 'text-muted-foreground', path: '/parent/library?filter=hidden' },
+    { label: 'Watch History', value: history.length, icon: TrendingUp, color: 'text-blue-400', path: '/parent/history' },
   ];
 
   return (
@@ -39,17 +39,18 @@ export default function ParentDashboard() {
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
         {stats.map((stat, i) => (
-          <motion.div
+          <motion.button
             key={stat.label}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.05 }}
-            className="bg-card rounded-lg p-4 border border-border"
+            onClick={() => navigate(stat.path)}
+            className="bg-card rounded-lg p-4 border border-border text-left hover:border-primary/40 hover:bg-secondary/50 transition-all cursor-pointer"
           >
             <stat.icon className={`w-5 h-5 ${stat.color} mb-2`} />
             <p className="text-2xl font-bold text-foreground">{stat.value}</p>
             <p className="text-xs text-muted-foreground">{stat.label}</p>
-          </motion.div>
+          </motion.button>
         ))}
       </div>
 
