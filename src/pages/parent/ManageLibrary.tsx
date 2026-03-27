@@ -1,15 +1,20 @@
 import { store } from '@/lib/store';
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Search, Eye, EyeOff, Star, Trash2, Edit, CheckCircle, Clock } from 'lucide-react';
 import { toast } from 'sonner';
 import { EditVideoModal } from '@/components/parent/EditVideoModal';
 import { Video } from '@/types';
 
+type FilterKey = 'all' | 'approved' | 'pending' | 'hidden';
+
 export default function ManageLibrary() {
+  const [searchParams] = useSearchParams();
+  const initialFilter = (searchParams.get('filter') as FilterKey) || 'all';
   const [, setTick] = useState(0);
   const [search, setSearch] = useState('');
-  const [filter, setFilter] = useState<'all' | 'approved' | 'pending' | 'hidden'>('all');
+  const [filter, setFilter] = useState<FilterKey>(initialFilter);
   const [editingVideo, setEditingVideo] = useState<Video | null>(null);
 
   useEffect(() => {
