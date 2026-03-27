@@ -33,7 +33,7 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             {/* Entry */}
-            <Route path="/" element={<SplashScreen />} />
+            <Route path="/" element={<Navigate to="/home" replace />} />
             <Route path="/profile" element={<ProfileSelect />} />
 
             {/* Child routes with bottom nav */}
