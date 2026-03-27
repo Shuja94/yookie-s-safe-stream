@@ -3,11 +3,14 @@ import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import { Search, Eye, EyeOff, Star, Trash2, Edit, CheckCircle, Clock } from 'lucide-react';
 import { toast } from 'sonner';
+import { EditVideoModal } from '@/components/parent/EditVideoModal';
+import { Video } from '@/types';
 
 export default function ManageLibrary() {
   const [, setTick] = useState(0);
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState<'all' | 'approved' | 'pending' | 'hidden'>('all');
+  const [editingVideo, setEditingVideo] = useState<Video | null>(null);
 
   useEffect(() => {
     const unsub = store.subscribe(() => setTick(t => t + 1));
