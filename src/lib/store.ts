@@ -2,14 +2,92 @@
 import { Video, Category, WatchHistory, Favorite, Profile } from '@/types';
 import { mockVideos, mockCategories, mockWatchHistory, mockFavorites, mockProfile } from '@/data/mock-data';
 
+const PROFILES_KEY = 'halalplay_profiles';
+const ACTIVE_PROFILE_KEY = 'halalplay_active_profile';
+
+function loadProfiles(): Profile[] {
+  try {
+    const raw = localStorage.getItem(PROFILES_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch {}
+  return [{ ...mockProfile }];
+}
+
+function saveProfiles(profiles: Profile[]) {
+  localStorage.setItem(PROFILES_KEY, JSON.stringify(profiles));
+}
+
 class AppStore {
   videos: Video[] = [...mockVideos];
   categories: Category[] = [...mockCategories];
   watchHistory: WatchHistory[] = [...mockWatchHistory];
   favorites: Favorite[] = [...mockFavorites];
-  profile: Profile = { ...mockProfile };
+  profiles: Profile[] = loadProfiles();
+  activeProfileId: string | null = localStorage.getItem(ACTIVE_PROFILE_KEY);
   isParentMode = false;
   private listeners: Set<() => void> = new Set();
+
+  get profile(): Profile {
+    if (this.activeProfileId) {
+      const found = this.profiles.find(p => p.id === this.activeProfileId);
+      if (found) return found;
+    }
+    return this.profiles[0] || mockProfile;
+  }
+
+  set profile(p: Profile) {
+    const idx = this.profiles.findIndex(pr => pr.id === p.id);
+    if (idx >= 0) {
+      this.profiles[idx] = p;
+    }
+    saveProfiles(this.profiles);
+    this.notify();
+  }
+
+  selectProfile(id: string) {
+    this.activeProfileId = id;
+    localStorage.setItem(ACTIVE_PROFILE_KEY, id);
+    this.notify();
+  }
+
+  clearActiveProfile() {
+    this.activeProfileId = null;
+    localStorage.removeItem(ACTIVE_PROFILE_KEY);
+    this.notify();
+  }
+
+  addProfile(data: { name: string; avatar_url: string; age: number }): Profile {
+    const p: Profile = {
+      id: `profile-${Date.now()}`,
+      name: data.name,
+      avatar_url: data.avatar_url,
+      age: data.age,
+      default_age_min: Math.max(0, data.age - 2),
+      default_age_max: Math.min(12, data.age + 2),
+      created_at: new Date().toISOString(),
+    };
+    this.profiles.push(p);
+    saveProfiles(this.profiles);
+    this.notify();
+    return p;
+  }
+
+  updateProfile(id: string, updates: Partial<Profile>) {
+    const idx = this.profiles.findIndex(p => p.id === id);
+    if (idx >= 0) {
+      this.profiles[idx] = { ...this.profiles[idx], ...updates };
+      saveProfiles(this.profiles);
+      this.notify();
+    }
+  }
+
+  deleteProfile(id: string) {
+    if (this.profiles.length <= 1) return; // keep at least one
+    this.profiles = this.profiles.filter(p => p.id !== id);
+    if (this.activeProfileId === id) this.clearActiveProfile();
+    saveProfiles(this.profiles);
+    this.notify();
+  }
 
   subscribe(fn: () => void) {
     this.listeners.add(fn);
@@ -159,8 +237,7 @@ class AppStore {
   }
 
   setAvatar(avatarId: string) {
-    this.profile = { ...this.profile, avatar_url: avatarId };
-    this.notify();
+    this.updateProfile(this.profile.id, { avatar_url: avatarId });
   }
 
   getNoMusicVideos(age?: number): Video[] {
