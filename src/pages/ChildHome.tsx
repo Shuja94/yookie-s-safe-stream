@@ -30,10 +30,20 @@ export default function ChildHome() {
           </h1>
           <p className="text-sm text-muted-foreground">What would you like to watch today?</p>
         </div>
-        <div className="w-10 h-10 rounded-xl gradient-sky overflow-hidden flex items-center justify-center">
-          <img src={yookieAvatar} alt="Yookie" className="w-full h-full object-cover" />
-        </div>
+        <button
+          onClick={() => setAvatarOpen(true)}
+          className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-2xl hover:scale-105 transition-transform"
+        >
+          {getAvatarEmoji(profile.avatar_url || 'lion')}
+        </button>
       </motion.header>
+
+      <AvatarPickerModal
+        open={avatarOpen}
+        onClose={() => setAvatarOpen(false)}
+        currentAvatar={profile.avatar_url || 'lion'}
+        onSelect={(id) => store.setAvatar(id)}
+      />
 
       {/* Hero */}
       {featured.length > 0 && <HeroBanner videos={featured} />}

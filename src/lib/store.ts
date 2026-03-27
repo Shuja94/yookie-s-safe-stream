@@ -158,6 +158,11 @@ class AppStore {
     this.notify();
   }
 
+  setAvatar(avatarId: string) {
+    this.profile = { ...this.profile, avatar_url: avatarId };
+    this.notify();
+  }
+
   getNoMusicVideos(age?: number): Video[] {
     return this.getApprovedVideos(age).filter(v => v.is_no_music);
   }
