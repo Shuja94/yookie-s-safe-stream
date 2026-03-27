@@ -39,17 +39,18 @@ export default function ParentDashboard() {
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
         {stats.map((stat, i) => (
-          <motion.div
+          <motion.button
             key={stat.label}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.05 }}
-            className="bg-card rounded-lg p-4 border border-border"
+            onClick={() => navigate(stat.path)}
+            className="bg-card rounded-lg p-4 border border-border text-left hover:border-primary/40 hover:bg-secondary/50 transition-all cursor-pointer"
           >
             <stat.icon className={`w-5 h-5 ${stat.color} mb-2`} />
             <p className="text-2xl font-bold text-foreground">{stat.value}</p>
             <p className="text-xs text-muted-foreground">{stat.label}</p>
-          </motion.div>
+          </motion.button>
         ))}
       </div>
 
