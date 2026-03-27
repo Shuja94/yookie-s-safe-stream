@@ -24,7 +24,7 @@ export default function ParentSettings() {
 
   useEffect(() => {
     const unsub = store.subscribe(() => setTick(t => t + 1));
-    return () => unsub();
+    return () => { unsub(); };
   }, []);
 
   const startEdit = (p: Profile) => {
