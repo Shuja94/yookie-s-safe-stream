@@ -15,10 +15,10 @@ export default function ParentDashboard() {
   const history = store.getWatchHistory();
 
   const stats = [
-    { label: 'Approved', value: approved.length, icon: CheckCircle, color: 'text-primary' },
-    { label: 'Pending', value: pending.length, icon: Clock, color: 'text-yellow-500' },
-    { label: 'Hidden', value: hidden.length, icon: EyeOff, color: 'text-muted-foreground' },
-    { label: 'Watch Events', value: history.length, icon: TrendingUp, color: 'text-blue-400' },
+    { label: 'Approved', value: approved.length, icon: CheckCircle, color: 'text-primary', path: '/parent/library?filter=approved' },
+    { label: 'Pending', value: pending.length, icon: Clock, color: 'text-yellow-500', path: '/parent/library?filter=pending' },
+    { label: 'Hidden', value: hidden.length, icon: EyeOff, color: 'text-muted-foreground', path: '/parent/library?filter=hidden' },
+    { label: 'Watch History', value: history.length, icon: TrendingUp, color: 'text-blue-400', path: '/parent/history' },
   ];
 
   return (
