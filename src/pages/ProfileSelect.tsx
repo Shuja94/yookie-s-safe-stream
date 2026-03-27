@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { store } from '@/lib/store';
 import { getAvatarEmoji } from '@/components/child/AvatarPickerModal';
 import { Plus, Lock, Edit2, Trash2, X, Check } from 'lucide-react';
+import { ParentLockModal } from '@/components/shared/ParentLockModal';
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Profile } from '@/types';
@@ -210,6 +211,7 @@ export default function ProfileSelect() {
   const [addOpen, setAddOpen] = useState(false);
   const [editProfile, setEditProfile] = useState<Profile | null>(null);
   const [isManaging, setIsManaging] = useState(false);
+  const [lockOpen, setLockOpen] = useState(false);
   const { user } = useAuth();
   const [, setTick] = useState(0);
 
@@ -262,7 +264,7 @@ export default function ProfileSelect() {
             </button>
           )}
           <button
-            onClick={() => navigate(user ? '/parent/dashboard' : '/parent/login')}
+            onClick={() => setLockOpen(true)}
             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-surface-2 transition-colors"
           >
             <Lock className="w-3.5 h-3.5" /> Parent
@@ -353,6 +355,11 @@ export default function ProfileSelect() {
           profile={editProfile}
         />
       )}
+      <ParentLockModal
+        open={lockOpen}
+        onClose={() => setLockOpen(false)}
+        onUnlock={() => { setLockOpen(false); navigate(user ? '/parent/dashboard' : '/parent/login'); }}
+      />
     </div>
   );
 }
