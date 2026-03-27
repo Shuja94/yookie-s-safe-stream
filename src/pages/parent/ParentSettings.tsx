@@ -1,13 +1,22 @@
 import { store } from '@/lib/store';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { useAuth } from '@/contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 export default function ParentSettings() {
   const [profile, setProfile] = useState({ ...store.profile });
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
 
   const handleSave = () => {
     store.profile = { ...profile };
     toast.success('Settings saved');
+  };
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/parent/login');
   };
 
   const inputClass = "w-full px-4 py-2.5 rounded-xl border border-border bg-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all text-sm";
@@ -17,19 +26,15 @@ export default function ParentSettings() {
     <div className="p-6 md:p-8 max-w-2xl">
       <h1 className="text-2xl font-bold text-foreground mb-6">Settings</h1>
 
-      {/* App Settings */}
+      {/* Parent Account */}
       <section className="card-ceramic-elevated p-6 mb-6">
-        <h2 className="text-lg font-semibold text-foreground mb-4">App Branding</h2>
-        <div className="space-y-4">
+        <h2 className="text-lg font-semibold text-foreground mb-4">Parent Account</h2>
+        <div className="space-y-3">
           <div>
-            <label className={labelClass}>App Name</label>
-            <input type="text" defaultValue="YookiePlay" className={inputClass} disabled />
+            <label className={labelClass}>Email</label>
+            <input type="email" value={user?.email || ''} className={inputClass} disabled />
           </div>
-          <div>
-            <label className={labelClass}>Subtitle</label>
-            <input type="text" defaultValue="A safe little world of videos for Yookie" className={inputClass} disabled />
-          </div>
-          <p className="text-xs text-muted-foreground">Branding customization will be available with backend integration.</p>
+          <p className="text-xs text-muted-foreground">Logged in as parent administrator.</p>
         </div>
       </section>
 
@@ -38,8 +43,9 @@ export default function ParentSettings() {
         <h2 className="text-lg font-semibold text-foreground mb-4">Child Profile</h2>
         <div className="space-y-4">
           <div>
-            <label className={labelClass}>Name</label>
-            <input type="text" value={profile.name} onChange={e => setProfile(p => ({ ...p, name: e.target.value }))} className={inputClass} />
+            <label className={labelClass}>Child's Name</label>
+            <input type="text" value={profile.name} onChange={e => setProfile(p => ({ ...p, name: e.target.value }))} className={inputClass} placeholder="Enter child's name" />
+            <p className="text-xs text-muted-foreground mt-1">This name will appear on the kids home screen.</p>
           </div>
           <div className="grid grid-cols-3 gap-4">
             <div>
@@ -58,31 +64,45 @@ export default function ParentSettings() {
         </div>
       </section>
 
-      {/* Future features */}
+      {/* App Branding */}
       <section className="card-ceramic-elevated p-6 mb-6">
-        <h2 className="text-lg font-semibold text-foreground mb-4">Coming Soon</h2>
+        <h2 className="text-lg font-semibold text-foreground mb-4">App Branding</h2>
+        <div className="space-y-3">
+          <div>
+            <label className={labelClass}>App Name</label>
+            <input type="text" defaultValue="Halal Play" className={inputClass} disabled />
+          </div>
+          <p className="text-xs text-muted-foreground">Safe Islamic videos for kids</p>
+        </div>
+      </section>
+
+      {/* Safety Info */}
+      <section className="card-ceramic-elevated p-6 mb-6">
+        <h2 className="text-lg font-semibold text-foreground mb-4">Safety Features</h2>
         <div className="space-y-3 text-sm text-muted-foreground">
-          <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/50">
-            <span>🔒</span> <span>Child mode lock (PIN protection)</span>
+          <div className="flex items-center gap-3 p-3 rounded-xl bg-primary/5">
+            <span>🔒</span> <span>Parent lock PIN: <strong className="text-foreground">1234</strong></span>
           </div>
-          <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/50">
-            <span>⏰</span> <span>Daily watch time limit</span>
+          <div className="flex items-center gap-3 p-3 rounded-xl bg-primary/5">
+            <span>🛡️</span> <span>YouTube embedded player — no external navigation</span>
           </div>
-          <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/50">
-            <span>🌙</span> <span>Bedtime mode transition</span>
+          <div className="flex items-center gap-3 p-3 rounded-xl bg-primary/5">
+            <span>🚫</span> <span>No search for kids — category browsing only</span>
           </div>
-          <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/50">
-            <span>👥</span> <span>Multiple child profiles</span>
-          </div>
-          <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/50">
-            <span>📥</span> <span>Offline downloads</span>
+          <div className="flex items-center gap-3 p-3 rounded-xl bg-primary/5">
+            <span>✅</span> <span>Only parent-approved videos shown to kids</span>
           </div>
         </div>
       </section>
 
-      <button onClick={handleSave} className="px-8 py-3 rounded-xl gradient-hero text-primary-foreground font-medium hover:shadow-lg transition-all">
-        Save Settings
-      </button>
+      <div className="flex gap-3">
+        <button onClick={handleSave} className="px-8 py-3 rounded-xl gradient-hero text-primary-foreground font-semibold hover:shadow-lg transition-all">
+          Save Settings
+        </button>
+        <button onClick={handleSignOut} className="px-6 py-3 rounded-xl border border-destructive text-destructive font-medium hover:bg-destructive/10 transition-all">
+          Sign Out
+        </button>
+      </div>
     </div>
   );
 }

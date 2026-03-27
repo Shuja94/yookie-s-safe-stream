@@ -1,10 +1,12 @@
 import { store } from '@/lib/store';
 import { motion } from 'framer-motion';
-import { Film, CheckCircle, Clock, EyeOff, TrendingUp, Plus } from 'lucide-react';
+import { Film, CheckCircle, Clock, EyeOff, TrendingUp, Plus, Home } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function ParentDashboard() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const allVideos = store.videos;
   const approved = allVideos.filter(v => v.is_approved && !v.is_hidden);
   const pending = allVideos.filter(v => !v.is_approved && !v.is_hidden);
@@ -23,14 +25,22 @@ export default function ParentDashboard() {
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-2xl font-bold text-foreground">Dashboard</h1>
-          <p className="text-sm text-muted-foreground">Manage your child's video library</p>
+          <p className="text-sm text-muted-foreground">Welcome back, {user?.email?.split('@')[0] || 'Parent'}</p>
         </div>
-        <button
-          onClick={() => navigate('/parent/add')}
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl gradient-hero text-primary-foreground font-medium hover:shadow-lg transition-all"
-        >
-          <Plus className="w-4 h-4" /> Add Content
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={() => navigate('/home')}
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-accent/10 text-accent font-medium hover:bg-accent/20 transition-all text-sm"
+          >
+            <Home className="w-4 h-4" /> Kids Mode
+          </button>
+          <button
+            onClick={() => navigate('/parent/add')}
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl gradient-hero text-primary-foreground font-medium hover:shadow-lg transition-all text-sm"
+          >
+            <Plus className="w-4 h-4" /> Add Content
+          </button>
+        </div>
       </div>
 
       {/* Stats */}
@@ -52,6 +62,31 @@ export default function ParentDashboard() {
         ))}
       </div>
 
+      {/* Child Info */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.15 }}
+        className="card-ceramic-elevated p-5 mb-6"
+      >
+        <h2 className="text-lg font-semibold text-foreground mb-3">Child Profile</h2>
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-2xl">
+            {store.profile.avatar_url ? '🦁' : '👶'}
+          </div>
+          <div>
+            <p className="font-semibold text-foreground">{store.profile.name}</p>
+            <p className="text-sm text-muted-foreground">Age {store.profile.age} • Content: {store.profile.default_age_min}–{store.profile.default_age_max} years</p>
+          </div>
+          <button
+            onClick={() => navigate('/parent/settings')}
+            className="ml-auto text-sm text-primary font-medium hover:underline"
+          >
+            Edit
+          </button>
+        </div>
+      </motion.div>
+
       {/* Recent watch history */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
@@ -68,7 +103,7 @@ export default function ParentDashboard() {
               <div key={wh.id} className="flex items-center gap-4 p-3 rounded-xl hover:bg-muted/50 transition-colors">
                 {wh.video && (
                   <>
-                    <div className="w-20 aspect-video rounded-lg overflow-hidden flex-shrink-0">
+                    <div className="w-20 aspect-video rounded-xl overflow-hidden flex-shrink-0">
                       <img src={wh.video.thumbnail_url} alt={wh.video.title} className="w-full h-full object-cover" />
                     </div>
                     <div className="flex-1 min-w-0">
