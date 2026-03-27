@@ -5,7 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/parent/ProtectedRoute";
 
-import SplashScreen from "./pages/SplashScreen";
+import { Navigate } from "react-router-dom";
 import ProfileSelect from "./pages/ProfileSelect";
 import ChildHome from "./pages/ChildHome";
 import VideoDetail from "./pages/VideoDetail";
