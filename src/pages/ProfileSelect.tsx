@@ -355,6 +355,11 @@ export default function ProfileSelect() {
           profile={editProfile}
         />
       )}
+      <ParentLockModal
+        open={lockOpen}
+        onClose={() => setLockOpen(false)}
+        onUnlock={() => { setLockOpen(false); navigate(user ? '/parent/dashboard' : '/parent/login'); }}
+      />
     </div>
   );
 }
