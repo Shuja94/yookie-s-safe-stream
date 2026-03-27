@@ -192,6 +192,7 @@ export default function AddContent() {
             { key: 'is_approved', label: 'Approved' },
             { key: 'is_featured', label: 'Featured' },
             { key: 'is_hidden', label: 'Hidden' },
+            { key: 'is_no_music', label: 'No Music 🔇' },
           ].map(toggle => (
             <label key={toggle.key} className="flex items-center gap-2 cursor-pointer">
               <input

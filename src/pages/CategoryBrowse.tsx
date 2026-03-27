@@ -58,7 +58,8 @@ export default function CategoryBrowse() {
 
       {/* All categories with their videos */}
       {categories.map((cat, i) => {
-        const vids = store.getVideosByCategory(cat.id, age);
+        const allVids = store.getVideosByCategory(cat.id, age);
+        const vids = noMusicOnly ? allVids.filter(v => v.is_no_music) : allVids;
         if (vids.length === 0) return null;
         return (
           <motion.section

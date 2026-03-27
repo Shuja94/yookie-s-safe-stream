@@ -51,6 +51,18 @@ export default function ChildHome() {
         </VideoRow>
       )}
 
+      {/* No Music */}
+      {(() => {
+        const noMusic = store.getNoMusicVideos(age);
+        return noMusic.length > 0 ? (
+          <VideoRow title="🔇 No Music" delay={0.15}>
+            {noMusic.map(v => (
+              <VideoCard key={v.id} video={v} category={store.getCategory(v.category_id)} />
+            ))}
+          </VideoRow>
+        ) : null;
+      })()}
+
       {/* Favorites */}
       {favorites.length > 0 && (
         <VideoRow title="Yookie's Favorites ❤️" delay={0.2}>
