@@ -158,6 +158,10 @@ class AppStore {
     this.notify();
   }
 
+  getNoMusicVideos(age?: number): Video[] {
+    return this.getApprovedVideos(age).filter(v => v.is_no_music);
+  }
+
   getRecommendations(videoId: string, age?: number, limit = 6): Video[] {
     const video = this.getVideo(videoId);
     if (!video) return [];

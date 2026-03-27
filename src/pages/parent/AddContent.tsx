@@ -24,6 +24,7 @@ export default function AddContent() {
     is_featured: false,
     is_approved: false,
     is_hidden: false,
+    is_no_music: false,
     safe_notes: '',
   });
 
@@ -69,6 +70,7 @@ export default function AddContent() {
       is_featured: form.is_featured,
       is_approved: form.is_approved,
       is_hidden: form.is_hidden,
+      is_no_music: form.is_no_music,
       safe_notes: form.safe_notes,
     });
 
@@ -190,6 +192,7 @@ export default function AddContent() {
             { key: 'is_approved', label: 'Approved' },
             { key: 'is_featured', label: 'Featured' },
             { key: 'is_hidden', label: 'Hidden' },
+            { key: 'is_no_music', label: 'No Music 🔇' },
           ].map(toggle => (
             <label key={toggle.key} className="flex items-center gap-2 cursor-pointer">
               <input

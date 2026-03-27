@@ -36,6 +36,7 @@ export interface Video {
   is_approved: boolean;
   is_featured: boolean;
   is_hidden: boolean;
+  is_no_music: boolean;
   safe_notes?: string;
   created_by?: string;
   created_at: string;
