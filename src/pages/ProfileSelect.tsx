@@ -213,11 +213,10 @@ export default function ProfileSelect() {
   const { user } = useAuth();
   const [, setTick] = useState(0);
 
-  // Subscribe to store changes
-  useState(() => {
+  useEffect(() => {
     const unsub = store.subscribe(() => setTick(t => t + 1));
-    return () => unsub();
-  });
+    return () => { unsub(); };
+  }, []);
 
   const handleSelectProfile = (profileId: string) => {
     if (isManaging) {
