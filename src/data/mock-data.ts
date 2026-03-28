@@ -2,7 +2,7 @@ import { Category, Video, Profile, WatchHistory, Favorite } from '@/types';
 
 export const mockProfile: Profile = {
   id: 'profile-1',
-  name: 'Ahmed',
+  name: 'Yook',
   avatar_url: 'lion',
   age: 4,
   default_age_min: 2,
