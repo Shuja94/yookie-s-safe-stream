@@ -1,11 +1,12 @@
 import { store } from '@/lib/store';
-import { motion } from 'framer-motion';
-import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Search, Eye, EyeOff, Star, Trash2, Edit, CheckCircle, Clock } from 'lucide-react';
+import { Search, Eye, EyeOff, Star, Trash2, Edit, CheckCircle, Clock, CheckSquare, Square, XCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { EditVideoModal } from '@/components/parent/EditVideoModal';
 import { Video } from '@/types';
+import { Checkbox } from '@/components/ui/checkbox';
 
 type FilterKey = 'all' | 'approved' | 'pending' | 'hidden';
 
@@ -16,6 +17,17 @@ export default function ManageLibrary() {
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState<FilterKey>(initialFilter);
   const [editingVideo, setEditingVideo] = useState<Video | null>(null);
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+
+  const toggleSelect = useCallback((id: string) => {
+    setSelected(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
+  }, []);
+
+  const clearSelection = () => setSelected(new Set());
 
   useEffect(() => {
     const unsub = store.subscribe(() => setTick(t => t + 1));
