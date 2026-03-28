@@ -250,7 +250,16 @@ class AppStore {
     const approved = this.getApprovedVideos(age).filter(v => v.id !== videoId);
     const sameCategory = approved.filter(v => v.category_id === video.category_id);
     const others = approved.filter(v => v.category_id !== video.category_id);
-    return [...sameCategory, ...others].slice(0, limit);
+    // Shuffle both pools for variety
+    const shuffled = (arr: typeof approved) => {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    };
+    return [...shuffled(sameCategory), ...shuffled(others)].slice(0, limit);
   }
 }
 
