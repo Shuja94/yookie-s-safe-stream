@@ -18,6 +18,15 @@ export function VideoCard({ video, category, progress, showProgress, size = 'md'
   const [isFav, setIsFav] = useState(store.isFavorite(video.id));
   const [imgError, setImgError] = useState(false);
 
+  // Detect YouTube's gray placeholder for unavailable videos
+  const handleImgLoad = useCallback((e: React.SyntheticEvent<HTMLImageElement>) => {
+    const img = e.currentTarget;
+    // YouTube's default "no thumbnail" placeholder is exactly 120x90
+    if (img.naturalWidth === 120 && img.naturalHeight === 90) {
+      setImgError(true);
+    }
+  }, []);
+
   const formatDuration = (seconds: number) => {
     const m = Math.floor(seconds / 60);
     const s = seconds % 60;
