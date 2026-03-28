@@ -1,10 +1,11 @@
 import { store } from '@/lib/store';
+import { getPin, setPin } from '@/lib/pin';
 import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { getAvatarEmoji } from '@/components/child/AvatarPickerModal';
-import { Edit2, Trash2, Plus } from 'lucide-react';
+import { Edit2, Trash2, Plus, Shield, Key } from 'lucide-react';
 import { Profile } from '@/types';
 
 const AVATAR_OPTIONS = [
@@ -21,6 +22,12 @@ export default function ParentSettings() {
   const [editAge, setEditAge] = useState(4);
   const [editAvatar, setEditAvatar] = useState('lion');
   const [adding, setAdding] = useState(false);
+
+  // PIN change state
+  const [showPinChange, setShowPinChange] = useState(false);
+  const [currentPin, setCurrentPin] = useState('');
+  const [newPin, setNewPin] = useState('');
+  const [confirmPin, setConfirmPin] = useState('');
 
   useEffect(() => {
     const unsub = store.subscribe(() => setTick(t => t + 1));
@@ -68,6 +75,27 @@ export default function ParentSettings() {
     }
   };
 
+  const handlePinChange = () => {
+    if (currentPin !== getPin()) {
+      toast.error('Current PIN is incorrect');
+      return;
+    }
+    if (newPin.length !== 4 || !/^\d{4}$/.test(newPin)) {
+      toast.error('PIN must be exactly 4 digits');
+      return;
+    }
+    if (newPin !== confirmPin) {
+      toast.error('New PINs do not match');
+      return;
+    }
+    setPin(newPin);
+    setCurrentPin('');
+    setNewPin('');
+    setConfirmPin('');
+    setShowPinChange(false);
+    toast.success('PIN updated successfully');
+  };
+
   const handleSignOut = async () => {
     await signOut();
     navigate('/parent/login');
@@ -79,15 +107,108 @@ export default function ParentSettings() {
     <div className="p-6 md:p-8 max-w-2xl">
       <h1 className="text-xl font-bold text-foreground mb-6">Settings</h1>
 
-      <section className="bg-card rounded-lg border border-border p-5 mb-4">
-        <h2 className="text-sm font-semibold text-foreground mb-4">Parent Account</h2>
+      {/* Parent Account */}
+      <section className="bg-card rounded-xl border border-border p-5 mb-4">
+        <h2 className="text-sm font-semibold text-foreground mb-4 flex items-center gap-2">
+          <Shield className="w-4 h-4 text-primary" /> Parent Account
+        </h2>
         <div>
           <label className="block text-xs font-medium text-foreground mb-1.5">Email</label>
           <input type="email" value={user?.email || ''} className="input-field" disabled />
         </div>
       </section>
 
-      <section className="bg-card rounded-lg border border-border p-5 mb-4">
+      {/* Security / PIN */}
+      <section className="bg-card rounded-xl border border-border p-5 mb-4">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-sm font-semibold text-foreground flex items-center gap-2">
+            <Key className="w-4 h-4 text-primary" /> Security
+          </h2>
+          {!showPinChange && (
+            <button
+              onClick={() => setShowPinChange(true)}
+              className="text-xs text-primary font-medium hover:underline"
+            >
+              Change PIN
+            </button>
+          )}
+        </div>
+
+        {!showPinChange ? (
+          <div className="space-y-2 text-xs text-muted-foreground">
+            <div className="flex items-center gap-2 p-3 rounded-lg bg-secondary">
+              🔒 Parent access is protected by a 4-digit PIN
+            </div>
+            <div className="flex items-center gap-2 p-3 rounded-lg bg-secondary">
+              🛡️ Embedded player only — no external navigation
+            </div>
+            <div className="flex items-center gap-2 p-3 rounded-lg bg-secondary">
+              ✅ Only approved videos shown to kids
+            </div>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            <div>
+              <label className="block text-xs font-medium text-foreground mb-1.5">Current PIN</label>
+              <input
+                type="password"
+                maxLength={4}
+                inputMode="numeric"
+                pattern="\d{4}"
+                value={currentPin}
+                onChange={e => setCurrentPin(e.target.value.replace(/\D/g, '').slice(0, 4))}
+                className="input-field w-32 tracking-[0.5em] text-center"
+                placeholder="••••"
+                autoFocus
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-foreground mb-1.5">New PIN</label>
+              <input
+                type="password"
+                maxLength={4}
+                inputMode="numeric"
+                pattern="\d{4}"
+                value={newPin}
+                onChange={e => setNewPin(e.target.value.replace(/\D/g, '').slice(0, 4))}
+                className="input-field w-32 tracking-[0.5em] text-center"
+                placeholder="••••"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-foreground mb-1.5">Confirm New PIN</label>
+              <input
+                type="password"
+                maxLength={4}
+                inputMode="numeric"
+                pattern="\d{4}"
+                value={confirmPin}
+                onChange={e => setConfirmPin(e.target.value.replace(/\D/g, '').slice(0, 4))}
+                className="input-field w-32 tracking-[0.5em] text-center"
+                placeholder="••••"
+              />
+            </div>
+            <div className="flex gap-2 pt-1">
+              <button
+                onClick={handlePinChange}
+                disabled={!currentPin || !newPin || !confirmPin}
+                className="px-5 py-2 rounded-lg gradient-hero text-primary-foreground font-medium text-sm disabled:opacity-50"
+              >
+                Update PIN
+              </button>
+              <button
+                onClick={() => { setShowPinChange(false); setCurrentPin(''); setNewPin(''); setConfirmPin(''); }}
+                className="px-4 py-2 rounded-lg border border-border text-foreground text-sm hover:bg-secondary transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        )}
+      </section>
+
+      {/* Child Profiles */}
+      <section className="bg-card rounded-xl border border-border p-5 mb-4">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-sm font-semibold text-foreground">Child Profiles</h2>
           {store.profiles.length < 5 && !isEditMode && (
@@ -155,21 +276,6 @@ export default function ParentSettings() {
             </div>
           </div>
         )}
-      </section>
-
-      <section className="bg-card rounded-lg border border-border p-5 mb-6">
-        <h2 className="text-sm font-semibold text-foreground mb-3">Safety</h2>
-        <div className="space-y-2 text-xs text-muted-foreground">
-          <div className="flex items-center gap-2 p-2.5 rounded-md bg-secondary">
-            🔒 Parent lock PIN: <strong className="text-foreground">1234</strong>
-          </div>
-          <div className="flex items-center gap-2 p-2.5 rounded-md bg-secondary">
-            🛡️ Embedded player only — no external navigation
-          </div>
-          <div className="flex items-center gap-2 p-2.5 rounded-md bg-secondary">
-            ✅ Only approved videos shown to kids
-          </div>
-        </div>
       </section>
 
       <div className="flex gap-3">
