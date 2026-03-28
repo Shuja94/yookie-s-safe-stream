@@ -188,7 +188,18 @@ class AppStore {
     this.notify();
   }
 
-  addVideo(video: Omit<Video, 'id' | 'created_at' | 'updated_at'>): Video {
+  addVideo(video: Omit<Video, 'id' | 'created_at' | 'updated_at'>): Video | null {
+    // Reject entries without a valid YouTube video ID and thumbnail
+    if (!video.youtube_video_id || !/^[a-zA-Z0-9_-]{11}$/.test(video.youtube_video_id)) {
+      return null;
+    }
+    if (!video.thumbnail_url || !video.thumbnail_url.includes('img.youtube.com')) {
+      return null;
+    }
+    // Reject duplicates
+    if (this.videos.some(v => v.youtube_video_id === video.youtube_video_id)) {
+      return null;
+    }
     const newVideo: Video = {
       ...video,
       id: `v-${Date.now()}`,
