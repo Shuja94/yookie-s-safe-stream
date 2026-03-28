@@ -49,6 +49,38 @@ export default function ManageLibrary() {
     { key: 'hidden', label: 'Hidden', count: allVideos.filter(v => v.is_hidden).length },
   ] as const;
 
+  const allSelected = filtered.length > 0 && filtered.every(v => selected.has(v.id));
+  const someSelected = selected.size > 0;
+
+  const toggleAll = () => {
+    if (allSelected) {
+      clearSelection();
+    } else {
+      setSelected(new Set(filtered.map(v => v.id)));
+    }
+  };
+
+  const bulkAction = (action: 'approve' | 'unapprove' | 'hide' | 'show' | 'feature' | 'unfeature' | 'delete') => {
+    const ids = Array.from(selected);
+    if (action === 'delete') {
+      if (!confirm(`Delete ${ids.length} video(s)?`)) return;
+      ids.forEach(id => store.deleteVideo(id));
+      toast.success(`Deleted ${ids.length} video(s)`);
+    } else {
+      const updates: Partial<Video> = 
+        action === 'approve' ? { is_approved: true } :
+        action === 'unapprove' ? { is_approved: false } :
+        action === 'hide' ? { is_hidden: true } :
+        action === 'show' ? { is_hidden: false } :
+        action === 'feature' ? { is_featured: true } :
+        { is_featured: false };
+      ids.forEach(id => store.updateVideo(id, updates));
+      const label = action.charAt(0).toUpperCase() + action.slice(1);
+      toast.success(`${label}d ${ids.length} video(s)`);
+    }
+    clearSelection();
+  };
+
   return (
     <div className="p-6 md:p-8 max-w-6xl">
       <h1 className="text-xl font-bold text-foreground mb-6">Library</h1>
@@ -62,7 +94,7 @@ export default function ManageLibrary() {
           {filterTabs.map(tab => (
             <button
               key={tab.key}
-              onClick={() => setFilter(tab.key)}
+              onClick={() => { setFilter(tab.key); clearSelection(); }}
               className={`px-3 py-2 rounded-lg text-xs font-medium transition-all ${
                 filter === tab.key ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground hover:bg-muted'
               }`}
@@ -73,11 +105,49 @@ export default function ManageLibrary() {
         </div>
       </div>
 
+      {/* Bulk action bar */}
+      <AnimatePresence>
+        {someSelected && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="flex items-center gap-2 mb-4 p-3 rounded-lg bg-primary/10 border border-primary/20"
+          >
+            <span className="text-xs font-medium text-foreground mr-2">{selected.size} selected</span>
+            <button onClick={() => bulkAction('approve')} className="px-2.5 py-1.5 rounded-md text-[11px] font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors">
+              Approve
+            </button>
+            <button onClick={() => bulkAction('unapprove')} className="px-2.5 py-1.5 rounded-md text-[11px] font-medium bg-secondary text-secondary-foreground hover:bg-muted transition-colors">
+              Unapprove
+            </button>
+            <button onClick={() => bulkAction('hide')} className="px-2.5 py-1.5 rounded-md text-[11px] font-medium bg-secondary text-secondary-foreground hover:bg-muted transition-colors">
+              Hide
+            </button>
+            <button onClick={() => bulkAction('show')} className="px-2.5 py-1.5 rounded-md text-[11px] font-medium bg-secondary text-secondary-foreground hover:bg-muted transition-colors">
+              Show
+            </button>
+            <button onClick={() => bulkAction('feature')} className="px-2.5 py-1.5 rounded-md text-[11px] font-medium bg-secondary text-secondary-foreground hover:bg-muted transition-colors">
+              Feature
+            </button>
+            <button onClick={() => bulkAction('delete')} className="px-2.5 py-1.5 rounded-md text-[11px] font-medium bg-destructive text-destructive-foreground hover:bg-destructive/90 transition-colors ml-auto">
+              Delete
+            </button>
+            <button onClick={clearSelection} className="p-1.5 rounded-md hover:bg-secondary text-muted-foreground transition-colors" title="Clear selection">
+              <XCircle className="w-4 h-4" />
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <div className="bg-card rounded-lg border border-border overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
               <tr className="border-b border-border">
+                <th className="p-3 w-10">
+                  <Checkbox checked={allSelected} onCheckedChange={toggleAll} />
+                </th>
                 <th className="text-left text-[10px] font-medium text-muted-foreground uppercase tracking-wider p-3">Video</th>
                 <th className="text-left text-[10px] font-medium text-muted-foreground uppercase tracking-wider p-3 hidden md:table-cell">Category</th>
                 <th className="text-left text-[10px] font-medium text-muted-foreground uppercase tracking-wider p-3">Status</th>
@@ -87,8 +157,12 @@ export default function ManageLibrary() {
             <tbody className="divide-y divide-border">
               {filtered.map((video) => {
                 const category = store.getCategory(video.category_id);
+                const isSelected = selected.has(video.id);
                 return (
-                  <tr key={video.id} className="hover:bg-secondary/30 transition-colors">
+                  <tr key={video.id} className={`transition-colors ${isSelected ? 'bg-primary/5' : 'hover:bg-secondary/30'}`}>
+                    <td className="p-3 w-10">
+                      <Checkbox checked={isSelected} onCheckedChange={() => toggleSelect(video.id)} />
+                    </td>
                     <td className="p-3">
                       <div className="flex items-center gap-3">
                         <div className="w-14 aspect-video rounded overflow-hidden flex-shrink-0 bg-secondary">
@@ -106,7 +180,7 @@ export default function ManageLibrary() {
                       ) : video.is_approved ? (
                         <span className="inline-flex items-center gap-1 text-[10px] text-primary"><CheckCircle className="w-3 h-3" /> Approved</span>
                       ) : (
-                        <span className="inline-flex items-center gap-1 text-[10px] text-yellow-500"><Clock className="w-3 h-3" /> Pending</span>
+                        <span className="inline-flex items-center gap-1 text-[10px] text-accent-foreground"><Clock className="w-3 h-3" /> Pending</span>
                       )}
                     </td>
                     <td className="p-3">
@@ -117,7 +191,7 @@ export default function ManageLibrary() {
                         <button onClick={() => { store.updateVideo(video.id, { is_approved: !video.is_approved }); toast.success(video.is_approved ? 'Unapproved' : 'Approved'); }} className="p-1.5 rounded hover:bg-secondary text-muted-foreground transition-colors" title="Toggle Approve">
                           <CheckCircle className="w-3.5 h-3.5" />
                         </button>
-                        <button onClick={() => { store.updateVideo(video.id, { is_featured: !video.is_featured }); toast.success(video.is_featured ? 'Unfeatured' : 'Featured'); }} className={`p-1.5 rounded hover:bg-secondary transition-colors ${video.is_featured ? 'text-yellow-500' : 'text-muted-foreground'}`} title="Toggle Featured">
+                        <button onClick={() => { store.updateVideo(video.id, { is_featured: !video.is_featured }); toast.success(video.is_featured ? 'Unfeatured' : 'Featured'); }} className={`p-1.5 rounded hover:bg-secondary transition-colors ${video.is_featured ? 'text-primary' : 'text-muted-foreground'}`} title="Toggle Featured">
                           <Star className={`w-3.5 h-3.5 ${video.is_featured ? 'fill-current' : ''}`} />
                         </button>
                         <button onClick={() => { store.updateVideo(video.id, { is_hidden: !video.is_hidden }); toast.success(video.is_hidden ? 'Shown' : 'Hidden'); }} className="p-1.5 rounded hover:bg-secondary text-muted-foreground transition-colors" title="Toggle Hidden">
