@@ -101,6 +101,7 @@ class AppStore {
   getApprovedVideos(age?: number): Video[] {
     return this.videos.filter(v => {
       if (!v.is_approved || v.is_hidden) return false;
+      if (!v.thumbnail_url) return false;
       if (age !== undefined) {
         return age >= v.age_min && age <= v.age_max;
       }

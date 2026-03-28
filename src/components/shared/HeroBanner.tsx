@@ -9,10 +9,14 @@ interface HeroBannerProps {
   videos: Video[];
 }
 
-export function HeroBanner({ videos }: HeroBannerProps) {
+export function HeroBanner({ videos: rawVideos }: HeroBannerProps) {
   const navigate = useNavigate();
   const [current, setCurrent] = useState(0);
-  const featured = videos[current];
+  const [failedIds, setFailedIds] = useState<Set<string>>(new Set());
+
+  // Filter out videos with broken thumbnails
+  const videos = rawVideos.filter(v => v.thumbnail_url && !failedIds.has(v.id));
+  const featured = videos[current % Math.max(videos.length, 1)];
 
   useEffect(() => {
     if (videos.length <= 1) return;
@@ -44,6 +48,7 @@ export function HeroBanner({ videos }: HeroBannerProps) {
               src={featured.thumbnail_url}
               alt={featured.title}
               className="w-full h-full object-cover"
+              onError={() => setFailedIds(prev => new Set(prev).add(featured.id))}
             />
             {/* Multi-layer gradient */}
             <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
