@@ -1,26 +1,28 @@
 import { useState } from 'react';
 import { store } from '@/lib/store';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { Link, CheckCircle, AlertCircle } from 'lucide-react';
+import { Link, CheckCircle, AlertCircle, Upload, Plus } from 'lucide-react';
 import { toast } from 'sonner';
+import { BulkImport } from '@/components/parent/BulkImport';
 
 const YOUTUBE_ID_REGEX = /^[a-zA-Z0-9_-]{11}$/;
 
 function extractYouTubeId(input: string): string | null {
   const trimmed = input.trim();
-  // Direct 11-char ID
   if (YOUTUBE_ID_REGEX.test(trimmed)) return trimmed;
-  // URL patterns
   const match = trimmed.match(
     /(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/))([a-zA-Z0-9_-]{11})/
   );
   return match ? match[1] : null;
 }
 
+type Tab = 'single' | 'bulk';
+
 export default function AddContent() {
   const navigate = useNavigate();
   const categories = store.categories;
+  const [tab, setTab] = useState<Tab>('single');
 
   const [youtubeInput, setYoutubeInput] = useState('');
   const [title, setTitle] = useState('');
@@ -54,7 +56,6 @@ export default function AddContent() {
       return;
     }
 
-    // Check for duplicate YouTube ID
     const existing = store.videos.find(v => v.youtube_video_id === extractedId);
     if (existing) {
       toast.error(`This video already exists: "${existing.title}"`);
@@ -84,154 +85,197 @@ export default function AddContent() {
     navigate('/parent/library');
   };
 
+  const tabs = [
+    { key: 'single' as Tab, label: 'Add Single', icon: Plus },
+    { key: 'bulk' as Tab, label: 'Bulk Import', icon: Upload },
+  ];
+
   return (
     <div className="p-6 md:p-8 max-w-2xl">
-      <h1 className="text-xl font-bold text-foreground mb-6">Add YouTube Video</h1>
+      <h1 className="text-xl font-bold text-foreground mb-6">Add Content</h1>
 
-      <form onSubmit={handleSubmit} className="space-y-5">
-        {/* YouTube URL / ID input */}
-        <div>
-          <label className="block text-xs font-medium text-foreground mb-1.5">
-            YouTube URL or Video ID
-          </label>
-          <div className="relative">
-            <Link className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <input
-              type="text"
-              value={youtubeInput}
-              onChange={e => setYoutubeInput(e.target.value)}
-              className="input-field pl-9 pr-9"
-              placeholder="https://youtube.com/watch?v=... or paste video ID"
-            />
-            {youtubeInput && (
-              <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                {extractedId ? (
-                  <CheckCircle className="w-4 h-4 text-green-500" />
-                ) : (
-                  <AlertCircle className="w-4 h-4 text-destructive" />
+      {/* Tab switcher */}
+      <div className="flex gap-2 mb-6">
+        {tabs.map(t => (
+          <button
+            key={t.key}
+            onClick={() => setTab(t.key)}
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all ${
+              tab === t.key
+                ? 'bg-primary text-primary-foreground shadow-md'
+                : 'bg-secondary text-secondary-foreground hover:bg-muted'
+            }`}
+          >
+            <t.icon className="w-4 h-4" />
+            {t.label}
+          </button>
+        ))}
+      </div>
+
+      <AnimatePresence mode="wait">
+        {tab === 'single' ? (
+          <motion.form
+            key="single"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            onSubmit={handleSubmit}
+            className="space-y-5"
+          >
+            {/* YouTube URL / ID input */}
+            <div>
+              <label className="block text-xs font-medium text-foreground mb-1.5">
+                YouTube URL or Video ID
+              </label>
+              <div className="relative">
+                <Link className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <input
+                  type="text"
+                  value={youtubeInput}
+                  onChange={e => setYoutubeInput(e.target.value)}
+                  className="input-field pl-9 pr-9"
+                  placeholder="https://youtube.com/watch?v=... or paste video ID"
+                />
+                {youtubeInput && (
+                  <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                    {extractedId ? (
+                      <CheckCircle className="w-4 h-4 text-green-500" />
+                    ) : (
+                      <AlertCircle className="w-4 h-4 text-destructive" />
+                    )}
+                  </div>
                 )}
               </div>
-            )}
-          </div>
-          {youtubeInput && !extractedId && (
-            <p className="text-xs text-destructive mt-1">
-              Could not extract a valid YouTube video ID
-            </p>
-          )}
-        </div>
+              {youtubeInput && !extractedId && (
+                <p className="text-xs text-destructive mt-1">
+                  Could not extract a valid YouTube video ID
+                </p>
+              )}
+            </div>
 
-        {/* Thumbnail preview */}
-        {thumbnailUrl && (
+            {/* Thumbnail preview */}
+            {thumbnailUrl && (
+              <motion.div
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="rounded-lg overflow-hidden aspect-video max-w-xs border border-border"
+              >
+                <img
+                  src={thumbnailUrl}
+                  alt="Video thumbnail"
+                  className="w-full h-full object-cover"
+                />
+              </motion.div>
+            )}
+
+            {/* Title */}
+            <div>
+              <label className="block text-xs font-medium text-foreground mb-1.5">Title *</label>
+              <input
+                type="text"
+                value={title}
+                onChange={e => setTitle(e.target.value)}
+                maxLength={120}
+                className="input-field"
+                placeholder="Video title"
+              />
+            </div>
+
+            {/* Category + Age */}
+            <div className="grid grid-cols-3 gap-3">
+              <div>
+                <label className="block text-xs font-medium text-foreground mb-1.5">Category</label>
+                <select
+                  value={categoryId}
+                  onChange={e => setCategoryId(e.target.value)}
+                  className="input-field"
+                >
+                  {categories.map(c => (
+                    <option key={c.id} value={c.id}>
+                      {c.icon} {c.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-foreground mb-1.5">Age Min</label>
+                <input
+                  type="number"
+                  min={0}
+                  max={12}
+                  value={ageMin}
+                  onChange={e => setAgeMin(+e.target.value)}
+                  className="input-field"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-foreground mb-1.5">Age Max</label>
+                <input
+                  type="number"
+                  min={0}
+                  max={12}
+                  value={ageMax}
+                  onChange={e => setAgeMax(+e.target.value)}
+                  className="input-field"
+                />
+              </div>
+            </div>
+
+            {/* Description */}
+            <div>
+              <label className="block text-xs font-medium text-foreground mb-1.5">Description</label>
+              <textarea
+                value={description}
+                onChange={e => setDescription(e.target.value)}
+                maxLength={500}
+                className="input-field min-h-[70px]"
+                placeholder="Brief description (optional)"
+              />
+            </div>
+
+            {/* Tags */}
+            <div>
+              <label className="block text-xs font-medium text-foreground mb-1.5">Tags (comma separated)</label>
+              <input
+                type="text"
+                value={tags}
+                onChange={e => setTags(e.target.value)}
+                className="input-field"
+                placeholder="quran, learning, kids"
+              />
+            </div>
+
+            {/* No music toggle */}
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={isNoMusic}
+                onChange={e => setIsNoMusic(e.target.checked)}
+                className="w-4 h-4 rounded border-border text-primary focus:ring-primary/30"
+              />
+              <span className="text-xs text-foreground">No Music</span>
+            </label>
+
+            {/* Submit */}
+            <button
+              type="submit"
+              disabled={!isValid}
+              className="px-6 py-2.5 rounded-lg gradient-hero text-primary-foreground font-medium text-sm transition-all disabled:opacity-40 disabled:cursor-not-allowed hover:shadow-lg hover:shadow-primary/20"
+            >
+              Add Video
+            </button>
+          </motion.form>
+        ) : (
           <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="rounded-lg overflow-hidden aspect-video max-w-xs border border-border"
+            key="bulk"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 20 }}
           >
-            <img
-              src={thumbnailUrl}
-              alt="Video thumbnail"
-              className="w-full h-full object-cover"
-            />
+            <BulkImport />
           </motion.div>
         )}
-
-        {/* Title */}
-        <div>
-          <label className="block text-xs font-medium text-foreground mb-1.5">Title *</label>
-          <input
-            type="text"
-            value={title}
-            onChange={e => setTitle(e.target.value)}
-            maxLength={120}
-            className="input-field"
-            placeholder="Video title"
-          />
-        </div>
-
-        {/* Category + Age */}
-        <div className="grid grid-cols-3 gap-3">
-          <div>
-            <label className="block text-xs font-medium text-foreground mb-1.5">Category</label>
-            <select
-              value={categoryId}
-              onChange={e => setCategoryId(e.target.value)}
-              className="input-field"
-            >
-              {categories.map(c => (
-                <option key={c.id} value={c.id}>
-                  {c.icon} {c.name}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label className="block text-xs font-medium text-foreground mb-1.5">Age Min</label>
-            <input
-              type="number"
-              min={0}
-              max={12}
-              value={ageMin}
-              onChange={e => setAgeMin(+e.target.value)}
-              className="input-field"
-            />
-          </div>
-          <div>
-            <label className="block text-xs font-medium text-foreground mb-1.5">Age Max</label>
-            <input
-              type="number"
-              min={0}
-              max={12}
-              value={ageMax}
-              onChange={e => setAgeMax(+e.target.value)}
-              className="input-field"
-            />
-          </div>
-        </div>
-
-        {/* Description */}
-        <div>
-          <label className="block text-xs font-medium text-foreground mb-1.5">Description</label>
-          <textarea
-            value={description}
-            onChange={e => setDescription(e.target.value)}
-            maxLength={500}
-            className="input-field min-h-[70px]"
-            placeholder="Brief description (optional)"
-          />
-        </div>
-
-        {/* Tags */}
-        <div>
-          <label className="block text-xs font-medium text-foreground mb-1.5">Tags (comma separated)</label>
-          <input
-            type="text"
-            value={tags}
-            onChange={e => setTags(e.target.value)}
-            className="input-field"
-            placeholder="quran, learning, kids"
-          />
-        </div>
-
-        {/* No music toggle */}
-        <label className="flex items-center gap-2 cursor-pointer">
-          <input
-            type="checkbox"
-            checked={isNoMusic}
-            onChange={e => setIsNoMusic(e.target.checked)}
-            className="w-4 h-4 rounded border-border text-primary focus:ring-primary/30"
-          />
-          <span className="text-xs text-foreground">No Music</span>
-        </label>
-
-        {/* Submit */}
-        <button
-          type="submit"
-          disabled={!isValid}
-          className="px-6 py-2.5 rounded-lg gradient-hero text-primary-foreground font-medium text-sm transition-all disabled:opacity-40 disabled:cursor-not-allowed hover:shadow-lg hover:shadow-primary/20"
-        >
-          Add Video
-        </button>
-      </form>
+      </AnimatePresence>
     </div>
   );
 }
