@@ -4,8 +4,8 @@
   "description": "Safe Islamic videos for kids",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0f1729",
-  "theme_color": "#22c55e",
+  "background_color": "#0e1117",
+  "theme_color": "#0e1117",
   "orientation": "portrait",
   "icons": [
     {

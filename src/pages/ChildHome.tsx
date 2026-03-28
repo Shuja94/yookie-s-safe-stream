@@ -6,19 +6,21 @@ import { LoadingSkeleton } from '@/components/shared/LoadingSkeleton';
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import { AvatarPickerModal, getAvatarEmoji } from '@/components/child/AvatarPickerModal';
-import { Settings } from 'lucide-react';
+import { Settings, Plus } from 'lucide-react';
 import { ParentLockModal } from '@/components/shared/ParentLockModal';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function ChildHome() {
   const profile = store.profile;
   const [avatarOpen, setAvatarOpen] = useState(false);
   const [lockOpen, setLockOpen] = useState(false);
+  const [addLockOpen, setAddLockOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const { user } = useAuth();
   const age = profile.age;
 
-  // Simulate initial load
   useEffect(() => {
     const t = setTimeout(() => setLoading(false), 600);
     return () => clearTimeout(t);
@@ -30,7 +32,6 @@ export default function ChildHome() {
   const favorites = store.getFavoriteVideos(age);
   const categories = store.categories.filter(c => c.is_active);
 
-  // Popular = most-watched or first 12 shuffled
   const popular = [...approved].sort(() => 0.5 - Math.random()).slice(0, 12);
 
   return (
@@ -48,7 +49,7 @@ export default function ChildHome() {
         <div className="flex items-center gap-3">
           <button
             onClick={() => { store.clearActiveProfile(); navigate('/profile'); }}
-            className="w-9 h-9 rounded-full bg-surface-2 flex items-center justify-center text-lg hover:scale-110 active:scale-90 transition-transform ring-2 ring-primary/20"
+            className="w-9 h-9 rounded-full bg-secondary flex items-center justify-center text-lg hover:scale-110 active:scale-90 transition-transform ring-2 ring-primary/20"
           >
             {getAvatarEmoji(profile.avatar_url || 'lion')}
           </button>
@@ -59,13 +60,22 @@ export default function ChildHome() {
             <p className="text-[11px] text-muted-foreground leading-tight">What shall we watch?</p>
           </div>
         </div>
-        <button
-          onClick={() => setLockOpen(true)}
-          className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-surface-2 transition-all"
-          aria-label="Parent settings"
-        >
-          <Settings className="w-[18px] h-[18px]" />
-        </button>
+        <div className="flex items-center gap-1">
+          <button
+            onClick={() => setAddLockOpen(true)}
+            className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-all"
+            aria-label="Add Video"
+          >
+            <Plus className="w-[18px] h-[18px]" />
+          </button>
+          <button
+            onClick={() => setLockOpen(true)}
+            className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-all"
+            aria-label="Parent settings"
+          >
+            <Settings className="w-[18px] h-[18px]" />
+          </button>
+        </div>
       </motion.header>
 
       <AvatarPickerModal
@@ -78,7 +88,21 @@ export default function ChildHome() {
       <ParentLockModal
         open={lockOpen}
         onClose={() => setLockOpen(false)}
-        onUnlock={() => { setLockOpen(false); navigate('/parent/login'); }}
+        onUnlock={() => { setLockOpen(false); navigate(user ? '/parent/dashboard' : '/parent/login'); }}
+      />
+
+      {/* Add Video PIN gate */}
+      <ParentLockModal
+        open={addLockOpen}
+        onClose={() => setAddLockOpen(false)}
+        onUnlock={() => {
+          setAddLockOpen(false);
+          if (user) {
+            navigate('/parent/add');
+          } else {
+            navigate('/parent/login');
+          }
+        }}
       />
 
       {/* Hero */}
@@ -98,7 +122,6 @@ export default function ChildHome() {
         </div>
       ) : (
         <>
-          {/* Continue Watching */}
           {continueWatching.length > 0 && (
             <VideoRow title="Continue Watching" delay={0.05}>
               {continueWatching.map(wh => (
@@ -113,7 +136,6 @@ export default function ChildHome() {
             </VideoRow>
           )}
 
-          {/* Recommended */}
           {approved.length > 0 && (
             <VideoRow title={`Recommended for ${profile.name}`} delay={0.1}>
               {approved.slice(0, 14).map(v => (
@@ -122,7 +144,6 @@ export default function ChildHome() {
             </VideoRow>
           )}
 
-          {/* Popular */}
           {popular.length > 0 && (
             <VideoRow title="🔥 Popular" delay={0.14}>
               {popular.map(v => (
@@ -131,7 +152,6 @@ export default function ChildHome() {
             </VideoRow>
           )}
 
-          {/* No Music */}
           {(() => {
             const noMusic = store.getNoMusicVideos(age);
             return noMusic.length > 0 ? (
@@ -143,7 +163,6 @@ export default function ChildHome() {
             ) : null;
           })()}
 
-          {/* Favorites */}
           {favorites.length > 0 && (
             <VideoRow title={`❤️ ${profile.name}'s Favorites`} delay={0.2}>
               {favorites.map(v => (
@@ -152,7 +171,6 @@ export default function ChildHome() {
             </VideoRow>
           )}
 
-          {/* Category rows */}
           {categories.map((cat, i) => {
             const vids = store.getVideosByCategory(cat.id, age);
             if (vids.length === 0) return null;
@@ -165,7 +183,6 @@ export default function ChildHome() {
             );
           })}
 
-          {/* Recently Added */}
           {approved.length > 0 && (
             <VideoRow title="✨ Recently Added" delay={0.4}>
               {[...approved].reverse().slice(0, 12).map(v => (
