@@ -16,6 +16,7 @@ interface VideoCardProps {
 export function VideoCard({ video, category, progress, showProgress, size = 'md' }: VideoCardProps) {
   const navigate = useNavigate();
   const [isFav, setIsFav] = useState(store.isFavorite(video.id));
+  const [imgError, setImgError] = useState(false);
 
   const formatDuration = (seconds: number) => {
     const m = Math.floor(seconds / 60);
@@ -35,6 +36,9 @@ export function VideoCard({ video, category, progress, showProgress, size = 'md'
     lg: 'w-[300px] md:w-[340px]',
   };
 
+  // Hide card entirely if thumbnail is missing or broken
+  if (!video.thumbnail_url || imgError) return null;
+
   return (
     <motion.div
       className={`flex-shrink-0 ${sizeClasses[size]} cursor-pointer group`}
@@ -49,6 +53,7 @@ export function VideoCard({ video, category, progress, showProgress, size = 'md'
           alt={video.title}
           className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
           loading="lazy"
+          onError={() => setImgError(true)}
         />
         {/* Hover gradient */}
         <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
