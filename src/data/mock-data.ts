@@ -121,7 +121,7 @@ export const mockVideos: Video[] = [
   v('l14', 'What Happens in Jannah?', 'X92MroHvpFg', 'cat-4', 600, 4, 12, ['jannah']),
   v('l15', 'Angels in Islam for Kids', 'QPVFwSBwAGI', 'cat-4', 480, 3, 10, ['angels']),
   v('l16', 'Shahada Explained for Kids', 'TQk2rGSxAtA', 'cat-4', 360, 3, 10, ['shahada']),
-  v('l17', 'Arabic Alphabet with Zaky', 'xH7GBdQeGNg', 'cat-4', 2400, 2, 7, ['arabic', 'alphabet']),
+  v('l17', 'Arabic Alphabet with Zaky', 'ZYKsaM0IXWI', 'cat-4', 2400, 2, 7, ['arabic', 'alphabet']),
 
   // ==================== CARTOONS (cat-5) ====================
   v('c01', 'Omar & Hana - Full Episodes', '2alQdi8-hPs', 'cat-5', 1800, 2, 7, ['omar-hana'], { featured: true }),
