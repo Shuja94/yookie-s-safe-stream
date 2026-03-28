@@ -32,7 +32,7 @@ function spreadBySeries(videos: Video[]): Video[] {
     groups.get(key)!.push(v);
   }
   const result: Video[] = [];
-  const queues = [...groups.values()].sort((a, b) => b.length - a.length);
+  const queues = Array.from(groups.values()).sort((a, b) => b.length - a.length);
   while (queues.some(q => q.length > 0)) {
     for (const q of queues) {
       const item = q.shift();
