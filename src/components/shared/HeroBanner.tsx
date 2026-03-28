@@ -48,6 +48,7 @@ export function HeroBanner({ videos: rawVideos }: HeroBannerProps) {
               src={featured.thumbnail_url}
               alt={featured.title}
               className="w-full h-full object-cover"
+              onError={() => setFailedIds(prev => new Set(prev).add(featured.id))}
             />
             {/* Multi-layer gradient */}
             <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
