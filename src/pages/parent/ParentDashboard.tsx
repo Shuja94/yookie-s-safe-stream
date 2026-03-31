@@ -1,6 +1,7 @@
 import { store } from '@/lib/store';
 import { motion } from 'framer-motion';
 import { Film, CheckCircle, Clock, EyeOff, TrendingUp, Plus, Home } from 'lucide-react';
+import { SupportDeveloperButton } from '@/components/parent/SupportDeveloperModal';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { getAvatarEmoji } from '@/components/child/AvatarPickerModal';
