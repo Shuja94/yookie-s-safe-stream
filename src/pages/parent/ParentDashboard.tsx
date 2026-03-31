@@ -29,12 +29,15 @@ export default function ParentDashboard() {
           <h1 className="text-xl font-bold text-foreground">Dashboard</h1>
           <p className="text-sm text-muted-foreground">Welcome, {user?.email?.split('@')[0] || 'Parent'}</p>
         </div>
-        <button
-          onClick={() => navigate('/parent/add')}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg gradient-hero text-primary-foreground font-medium text-sm hover:shadow-lg hover:shadow-primary/20 transition-all"
-        >
-          <Plus className="w-4 h-4" /> Add Content
-        </button>
+        <div className="flex items-center gap-2">
+          <SupportDeveloperButton />
+          <button
+            onClick={() => navigate('/parent/add')}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg gradient-hero text-primary-foreground font-medium text-sm hover:shadow-lg hover:shadow-primary/20 transition-all"
+          >
+            <Plus className="w-4 h-4" /> Add Content
+          </button>
+        </div>
       </div>
 
       {/* Stats */}
