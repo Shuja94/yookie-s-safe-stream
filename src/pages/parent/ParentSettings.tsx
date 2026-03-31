@@ -6,6 +6,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { getAvatarEmoji } from '@/components/child/AvatarPickerModal';
 import { Edit2, Trash2, Plus, Shield, Key } from 'lucide-react';
+import { SupportDeveloperButton } from '@/components/parent/SupportDeveloperModal';
 import { Profile } from '@/types';
 
 const AVATAR_OPTIONS = [
@@ -278,7 +279,8 @@ export default function ParentSettings() {
         )}
       </section>
 
-      <div className="flex gap-3">
+      <div className="flex items-center gap-3">
+        <SupportDeveloperButton />
         <button onClick={handleSignOut} className="px-5 py-2.5 rounded-lg border border-destructive text-destructive font-medium text-sm hover:bg-destructive/10 transition-all">
           Sign Out
         </button>
