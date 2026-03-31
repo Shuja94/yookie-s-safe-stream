@@ -6,6 +6,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { getAvatarEmoji } from '@/components/child/AvatarPickerModal';
 import { Edit2, Trash2, Plus, Shield, Key } from 'lucide-react';
+import { SupportDeveloperButton } from '@/components/parent/SupportDeveloperModal';
 import { Profile } from '@/types';
 
 const AVATAR_OPTIONS = [
